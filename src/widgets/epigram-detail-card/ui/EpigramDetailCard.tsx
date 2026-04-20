@@ -1,5 +1,5 @@
 import { ExternalLink } from "lucide-react-native";
-import type { ReactElement } from "react";
+import { memo, type ReactElement } from "react";
 import { Linking, Pressable, StyleSheet, Text, View } from "react-native";
 
 import type { EpigramDetail } from "~/entities/epigram";
@@ -9,11 +9,16 @@ interface EpigramDetailCardProps {
   epigram: EpigramDetail;
 }
 
+interface ReferenceProps {
+  title: string;
+  url: string | null;
+}
+
 const RULE_LINE_SPACING = 28;
 const RULE_LINE_COUNT = 24;
 const RULE_LINE_COLOR = "#f2f2f2";
 
-function RuledLines(): ReactElement {
+const RuledLines = memo(function RuledLines(): ReactElement {
   return (
     <View pointerEvents="none" style={StyleSheet.absoluteFill}>
       {Array.from({ length: RULE_LINE_COUNT }).map((_, index) => (
@@ -31,24 +36,18 @@ function RuledLines(): ReactElement {
       ))}
     </View>
   );
-}
+});
 
-function Reference({
-  epigram,
-}: {
-  epigram: EpigramDetail;
-}): ReactElement | null {
-  if (!epigram.referenceTitle) return null;
-
+function Reference({ title, url }: ReferenceProps): ReactElement {
   async function handleOpenReference(): Promise<void> {
-    if (!epigram.referenceUrl) return;
-    await Linking.openURL(epigram.referenceUrl);
+    if (!url) return;
+    await Linking.openURL(url);
   }
 
-  if (!epigram.referenceUrl) {
+  if (!url) {
     return (
       <Text className="text-right font-sans text-xs text-black-300">
-        {epigram.referenceTitle}
+        {title}
       </Text>
     );
   }
@@ -57,12 +56,10 @@ function Reference({
     <Pressable
       onPress={handleOpenReference}
       accessibilityRole="link"
-      accessibilityLabel={`출처 ${epigram.referenceTitle} 열기`}
+      accessibilityLabel={`출처 ${title} 열기`}
       className="flex-row items-center justify-end gap-1 self-end"
     >
-      <Text className="font-sans text-xs text-blue-500 underline">
-        {epigram.referenceTitle}
-      </Text>
+      <Text className="font-sans text-xs text-blue-500 underline">{title}</Text>
       <ExternalLink size={12} color="#3b82f6" />
     </Pressable>
   );
@@ -81,7 +78,12 @@ export function EpigramDetailCard({
         <Text className="text-right font-serif text-base text-blue-400">
           - {epigram.author} -
         </Text>
-        <Reference epigram={epigram} />
+        {epigram.referenceTitle && (
+          <Reference
+            title={epigram.referenceTitle}
+            url={epigram.referenceUrl}
+          />
+        )}
         {epigram.tags.length > 0 && (
           <View className="flex-row flex-wrap justify-end gap-2">
             {epigram.tags.map((tag) => (
