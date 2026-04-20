@@ -1,30 +1,33 @@
-import '../global.css';
+import "../global.css";
 
 import {
   NanumMyeongjo_400Regular,
   NanumMyeongjo_700Bold,
-} from '@expo-google-fonts/nanum-myeongjo';
-import { useFonts } from 'expo-font';
-import { Stack } from 'expo-router';
-import * as SplashScreen from 'expo-splash-screen';
-import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
-import 'react-native-reanimated';
+} from "@expo-google-fonts/nanum-myeongjo";
+import { useFonts } from "expo-font";
+import { Stack } from "expo-router";
+import * as SplashScreen from "expo-splash-screen";
+import { StatusBar } from "expo-status-bar";
+import { useEffect } from "react";
+import "react-native-reanimated";
 
-import { QueryProvider } from '~/shared/api/QueryProvider';
+import { useSessionExpiryRedirect } from "~/features/auth";
+import { QueryProvider } from "~/shared/api/QueryProvider";
 
 SplashScreen.preventAutoHideAsync();
 
 export const unstable_settings = {
-  anchor: '(tabs)',
+  anchor: "(tabs)",
 };
 
 export default function RootLayout() {
   const [fontsLoaded, fontsError] = useFonts({
-    Pretendard: require('pretendard/dist/public/variable/PretendardVariable.ttf'),
+    Pretendard: require("pretendard/dist/public/variable/PretendardVariable.ttf"),
     NanumMyeongjo: NanumMyeongjo_400Regular,
-    'NanumMyeongjo-Bold': NanumMyeongjo_700Bold,
+    "NanumMyeongjo-Bold": NanumMyeongjo_700Bold,
   });
+
+  useSessionExpiryRedirect();
 
   useEffect(() => {
     if (fontsLoaded || fontsError) {
