@@ -1,12 +1,12 @@
 import { router } from "expo-router";
-import { memo, type ReactElement, useMemo } from "react";
+import { memo, type ReactElement } from "react";
 import { Pressable, Text, View } from "react-native";
 
 import type { Epigram } from "~/entities/epigram";
 
 interface SearchResultItemProps {
   epigram: Epigram;
-  keyword: string;
+  highlightRegex: RegExp | null;
 }
 
 interface HighlightedSegment {
@@ -15,7 +15,6 @@ interface HighlightedSegment {
 }
 
 function buildSegments(text: string, regex: RegExp): HighlightedSegment[] {
-  // split alternates: even indices are plain, odd indices are matched groups
   return text.split(regex).map((part, index) => ({
     text: part,
     isMatch: index % 2 === 1,
@@ -24,23 +23,17 @@ function buildSegments(text: string, regex: RegExp): HighlightedSegment[] {
 
 interface HighlightedTextProps {
   text: string;
-  keyword: string;
+  regex: RegExp | null;
   className: string;
   highlightClassName: string;
 }
 
 function HighlightedText({
   text,
-  keyword,
+  regex,
   className,
   highlightClassName,
 }: HighlightedTextProps): ReactElement {
-  const regex = useMemo(() => {
-    if (!keyword.trim()) return null;
-    const escaped = keyword.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
-    return new RegExp(`(${escaped})`, "i");
-  }, [keyword]);
-
   if (!regex) return <Text className={className}>{text}</Text>;
 
   return (
@@ -60,10 +53,10 @@ function HighlightedText({
 
 interface TagListProps {
   tags: Epigram["tags"];
-  keyword: string;
+  highlightRegex: RegExp | null;
 }
 
-function TagList({ tags, keyword }: TagListProps): ReactElement | null {
+function TagList({ tags, highlightRegex }: TagListProps): ReactElement | null {
   if (tags.length === 0) return null;
 
   return (
@@ -76,7 +69,7 @@ function TagList({ tags, keyword }: TagListProps): ReactElement | null {
           #
           <HighlightedText
             text={tag.name}
-            keyword={keyword}
+            regex={highlightRegex}
             className="font-sans text-sm text-blue-500"
             highlightClassName="font-semibold text-illust-blue"
           />
@@ -88,7 +81,7 @@ function TagList({ tags, keyword }: TagListProps): ReactElement | null {
 
 function SearchResultItemBase({
   epigram,
-  keyword,
+  highlightRegex,
 }: SearchResultItemProps): ReactElement {
   const authorLabel = epigram.referenceTitle
     ? `${epigram.author} 《${epigram.referenceTitle}》`
@@ -108,7 +101,7 @@ function SearchResultItemBase({
         <View className="gap-3">
           <HighlightedText
             text={epigram.content}
-            keyword={keyword}
+            regex={highlightRegex}
             className="font-serif text-base text-black-700"
             highlightClassName="font-semibold text-illust-blue"
           />
@@ -117,7 +110,7 @@ function SearchResultItemBase({
           </Text>
         </View>
 
-        <TagList tags={epigram.tags} keyword={keyword} />
+        <TagList tags={epigram.tags} highlightRegex={highlightRegex} />
       </View>
     </Pressable>
   );
