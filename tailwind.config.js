@@ -1,3 +1,5 @@
+const tokens = require("./src/shared/config/tokens");
+
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
@@ -7,7 +9,15 @@ module.exports = {
   ],
   presets: [require("nativewind/preset")],
   theme: {
-    extend: {},
+    extend: {
+      colors: tokens.colors,
+      fontSize: tokens.fontSize,
+      fontWeight: tokens.fontWeight,
+      fontFamily: tokens.fontFamily,
+      spacing: tokens.spacing,
+      borderRadius: tokens.borderRadius,
+      boxShadow: tokens.boxShadow,
+    },
   },
   plugins: [],
 };
