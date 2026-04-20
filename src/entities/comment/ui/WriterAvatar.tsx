@@ -2,14 +2,15 @@ import { User } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { Image, View } from "react-native";
 
-import type { Writer } from "../model/schema";
-
 interface WriterAvatarProps {
-  writer: Writer;
+  writer: { image: string | null; nickname: string };
   size?: number;
 }
 
-export function WriterAvatar({ writer, size = 36 }: WriterAvatarProps): ReactElement {
+export function WriterAvatar({
+  writer,
+  size = 36,
+}: WriterAvatarProps): ReactElement {
   if (writer.image) {
     return (
       <Image

@@ -1,8 +1,7 @@
-import { Lock, Unlock } from "lucide-react-native";
 import type { ReactElement } from "react";
-import { Pressable, Text, TextInput, View } from "react-native";
+import { Text, TextInput, View } from "react-native";
 
-import { Button } from "~/shared/ui/Button";
+import { Button, PrivacyToggle } from "~/shared/ui";
 
 import { useCommentEdit } from "../model/useCommentEdit";
 
@@ -33,7 +32,13 @@ export function CommentEditForm({
     handlePrivateToggle,
     handleSubmit,
     handleCancel,
-  } = useCommentEdit({ commentId, epigramId, initialContent, initialIsPrivate, onCancel });
+  } = useCommentEdit({
+    commentId,
+    epigramId,
+    initialContent,
+    initialIsPrivate,
+    onCancel,
+  });
 
   return (
     <View className="gap-2 rounded-2xl border border-blue-400 bg-white p-3">
@@ -56,21 +61,7 @@ export function CommentEditForm({
       )}
 
       <View className="flex-row items-center justify-between">
-        <Pressable
-          onPress={handlePrivateToggle}
-          accessibilityRole="button"
-          accessibilityLabel={isPrivate ? "비공개 (공개로 전환)" : "공개 (비공개로 전환)"}
-          className="flex-row items-center gap-1 px-1 py-1 active:opacity-60"
-        >
-          {isPrivate ? (
-            <Lock size={12} color="#6a82a9" />
-          ) : (
-            <Unlock size={12} color="#6a82a9" />
-          )}
-          <Text className="font-sans text-xs text-blue-400">
-            {isPrivate ? "비공개" : "공개"}
-          </Text>
-        </Pressable>
+        <PrivacyToggle isPrivate={isPrivate} onToggle={handlePrivateToggle} />
 
         <View className="flex-row gap-2">
           <Button

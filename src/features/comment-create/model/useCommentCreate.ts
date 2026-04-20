@@ -25,19 +25,21 @@ export function useCommentCreate(epigramId: number): UseCommentCreateReturn {
   const queryClient = useQueryClient();
   const [content, setContent] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
-  const [hasSubmitError, setHasSubmitError] = useState(false);
 
-  const { mutate, isPending: isSubmitting } = useMutation({
+  const {
+    mutate,
+    isPending: isSubmitting,
+    isError: hasError,
+    reset,
+  } = useMutation({
     mutationFn: (body: CreateCommentBody) =>
       apiClient.post<Comment>("/comments", body).then((res) => res.data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["epigrams", epigramId, "comments"] });
+      queryClient.invalidateQueries({
+        queryKey: ["epigrams", epigramId, "comments"],
+      });
       setContent("");
       setIsPrivate(false);
-      setHasSubmitError(false);
-    },
-    onError: () => {
-      setHasSubmitError(true);
     },
   });
 
@@ -45,7 +47,7 @@ export function useCommentCreate(epigramId: number): UseCommentCreateReturn {
 
   function handleContentChange(value: string): void {
     setContent(value);
-    if (hasSubmitError) setHasSubmitError(false);
+    if (hasError) reset();
   }
 
   function handlePrivateToggle(): void {
@@ -62,7 +64,7 @@ export function useCommentCreate(epigramId: number): UseCommentCreateReturn {
     content,
     isPrivate,
     isSubmitting,
-    hasError: hasSubmitError,
+    hasError,
     canSubmit,
     handleContentChange,
     handlePrivateToggle,
