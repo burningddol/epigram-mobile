@@ -46,9 +46,13 @@ export function useCommentEdit({
     isError: hasError,
   } = useMutation({
     mutationFn: (body: UpdateCommentBody) =>
-      apiClient.patch<Comment>(`/comments/${commentId}`, body).then((res) => res.data),
+      apiClient
+        .patch<Comment>(`/comments/${commentId}`, body)
+        .then((res) => res.data),
     onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["epigrams", epigramId, "comments"] });
+      queryClient.invalidateQueries({
+        queryKey: ["epigrams", epigramId, "comments"],
+      });
       onCancel();
     },
   });

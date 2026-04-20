@@ -1,19 +1,31 @@
-import { Lock, Unlock, User } from "lucide-react-native";
 import type { ReactElement } from "react";
-import { Image, Pressable, Text, TextInput, View } from "react-native";
+import { Text, TextInput, View } from "react-native";
 
-import { Button } from "~/shared/ui/Button";
+import { WriterAvatar } from "~/entities/comment";
+import { Button, PrivacyToggle } from "~/shared/ui";
 
 import { useCommentCreate } from "../model/useCommentCreate";
 
+interface CommentAuthor {
+  nickname: string;
+  image: string | null;
+}
+
 interface CommentFormProps {
   epigramId: number;
-  userImage?: string | null;
+  author: CommentAuthor | null;
 }
 
 const MAX_LENGTH = 100;
+const PLACEHOLDER_AUTHOR: CommentAuthor = {
+  nickname: "내 프로필",
+  image: null,
+};
 
-export function CommentForm({ epigramId, userImage }: CommentFormProps): ReactElement {
+export function CommentForm({
+  epigramId,
+  author,
+}: CommentFormProps): ReactElement {
   const {
     content,
     isPrivate,
@@ -27,16 +39,7 @@ export function CommentForm({ epigramId, userImage }: CommentFormProps): ReactEl
 
   return (
     <View className="flex-row gap-3">
-      <View
-        className="h-9 w-9 items-center justify-center overflow-hidden rounded-full bg-blue-200"
-        accessibilityLabel="내 프로필"
-      >
-        {userImage ? (
-          <Image source={{ uri: userImage }} className="h-full w-full" />
-        ) : (
-          <User size={16} color="#2b6cb0" />
-        )}
-      </View>
+      <WriterAvatar writer={author ?? PLACEHOLDER_AUTHOR} />
 
       <View className="flex-1 gap-2 rounded-2xl border border-blue-200 bg-white p-3">
         <TextInput
@@ -58,21 +61,7 @@ export function CommentForm({ epigramId, userImage }: CommentFormProps): ReactEl
         )}
 
         <View className="flex-row items-center justify-between">
-          <Pressable
-            onPress={handlePrivateToggle}
-            accessibilityRole="button"
-            accessibilityLabel={isPrivate ? "비공개 (공개로 전환)" : "공개 (비공개로 전환)"}
-            className="flex-row items-center gap-1 px-1 py-1 active:opacity-60"
-          >
-            {isPrivate ? (
-              <Lock size={12} color="#6a82a9" />
-            ) : (
-              <Unlock size={12} color="#6a82a9" />
-            )}
-            <Text className="font-sans text-xs text-blue-400">
-              {isPrivate ? "비공개" : "공개"}
-            </Text>
-          </Pressable>
+          <PrivacyToggle isPrivate={isPrivate} onToggle={handlePrivateToggle} />
 
           <Button
             onPress={handleSubmit}

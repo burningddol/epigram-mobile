@@ -16,7 +16,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useEpigramDetail, type EpigramDetail } from "~/entities/epigram";
 import { useMe } from "~/entities/user";
 import { LikeButton } from "~/features/epigram-like";
-import { CommentSection } from "~/widgets/comment-section";
+import { EpigramDetailList } from "~/widgets/epigram-detail-list";
 
 interface EpigramDetailScreenProps {
   epigramId: number;
@@ -85,7 +85,11 @@ function ErrorState(): ReactElement {
   );
 }
 
-function Reference({ epigram }: { epigram: EpigramDetail }): ReactElement | null {
+function Reference({
+  epigram,
+}: {
+  epigram: EpigramDetail;
+}): ReactElement | null {
   if (!epigram.referenceTitle) return null;
 
   async function handleOpenReference(): Promise<void> {
@@ -162,6 +166,17 @@ export function EpigramDetailScreen({
   if (isMeLoading) return null;
   if (!user) return <Redirect href="/login" />;
 
+  function renderBody(): ReactElement {
+    if (isEpigramLoading) return <LoadingState />;
+    if (isError || !epigram) return <ErrorState />;
+    return (
+      <EpigramDetailList
+        epigramId={epigramId}
+        listHeader={<EpigramCard epigram={epigram} />}
+      />
+    );
+  }
+
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       <View className="flex-row items-center px-screen-x py-2">
@@ -171,37 +186,8 @@ export function EpigramDetailScreen({
         className="flex-1"
         behavior={Platform.OS === "ios" ? "padding" : undefined}
       >
-        <ShowContent
-          epigramId={epigramId}
-          epigram={epigram}
-          isLoading={isEpigramLoading}
-          isError={isError}
-        />
+        {renderBody()}
       </KeyboardAvoidingView>
     </SafeAreaView>
-  );
-}
-
-interface ShowContentProps {
-  epigramId: number;
-  epigram: EpigramDetail | undefined;
-  isLoading: boolean;
-  isError: boolean;
-}
-
-function ShowContent({
-  epigramId,
-  epigram,
-  isLoading,
-  isError,
-}: ShowContentProps): ReactElement {
-  if (isLoading) return <LoadingState />;
-  if (isError || !epigram) return <ErrorState />;
-
-  return (
-    <CommentSection
-      epigramId={epigramId}
-      listHeader={<EpigramCard epigram={epigram} />}
-    />
   );
 }
