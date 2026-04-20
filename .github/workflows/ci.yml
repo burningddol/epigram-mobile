@@ -31,14 +31,20 @@ jobs:
         id: install
         run: npm ci --verbose > /tmp/npm-install.log 2>&1
 
-      - name: Show install log on failure
-        if: failure() && steps.install.outcome == 'failure'
+      - name: Post install log as PR comment on failure
+        if: failure() && steps.install.outcome == 'failure' && github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
-          echo '## npm ci log (last 300 lines)' >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          tail -300 /tmp/npm-install.log >> $GITHUB_STEP_SUMMARY
-          echo '```' >> $GITHUB_STEP_SUMMARY
-          tail -300 /tmp/npm-install.log
+          {
+            echo '## CI debug: npm ci failure log (last 200 lines)'
+            echo ''
+            echo '```'
+            tail -200 /tmp/npm-install.log
+            echo '```'
+          } > /tmp/comment.md
+          gh pr comment "$PR_NUMBER" --body-file /tmp/comment.md --repo "$GITHUB_REPOSITORY"
 
       - name: Type check
         run: npm run typecheck
