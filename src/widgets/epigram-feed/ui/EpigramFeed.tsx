@@ -1,5 +1,12 @@
+import { router } from "expo-router";
 import { useCallback, type ReactElement } from "react";
-import { ActivityIndicator, FlatList, Text, View, type ListRenderItem } from "react-native";
+import {
+  ActivityIndicator,
+  FlatList,
+  Text,
+  View,
+  type ListRenderItem,
+} from "react-native";
 
 import { useEpigrams, type Epigram } from "~/entities/epigram";
 import { EpigramCard } from "~/widgets/epigram-card";
@@ -21,8 +28,12 @@ function LoadingState(): ReactElement {
 function EmptyState(): ReactElement {
   return (
     <View className="flex-1 items-center justify-center py-20">
-      <Text className="font-serif text-base text-black-300">등록된 에피그램이 없습니다</Text>
-      <Text className="mt-2 font-sans text-sm text-blue-400">첫 번째 에피그램을 작성해 보세요</Text>
+      <Text className="font-serif text-base text-black-300">
+        등록된 에피그램이 없습니다
+      </Text>
+      <Text className="mt-2 font-sans text-sm text-blue-400">
+        첫 번째 에피그램을 작성해 보세요
+      </Text>
     </View>
   );
 }
@@ -45,15 +56,29 @@ function FooterLoader({ visible }: { visible: boolean }): ReactElement | null {
 }
 
 export function EpigramFeed(): ReactElement {
-  const { data, isLoading, isError, isFetchingNextPage, hasNextPage, fetchNextPage } = useEpigrams({
+  const {
+    data,
+    isLoading,
+    isError,
+    isFetchingNextPage,
+    hasNextPage,
+    fetchNextPage,
+  } = useEpigrams({
     limit: FEED_PAGE_SIZE,
   });
 
   const epigrams = data?.pages.flatMap((page) => page.list) ?? [];
 
+  const handleCardPress = useCallback((epigramId: number) => {
+    router.push({
+      pathname: "/epigrams/[id]",
+      params: { id: String(epigramId) },
+    });
+  }, []);
+
   const renderItem = useCallback<ListRenderItem<Epigram>>(
-    ({ item }) => <EpigramCard epigram={item} />,
-    []
+    ({ item }) => <EpigramCard epigram={item} onPress={handleCardPress} />,
+    [handleCardPress],
   );
 
   function handleEndReached(): void {
