@@ -4,3 +4,5 @@ export type { Comment, CommentListResponse, Writer } from "./model/schema";
 export { useEpigramComments } from "./api/useEpigramComments";
 export { useMyComments } from "./api/useMyComments";
 export { useRecentComments } from "./api/useRecentComments";
+
+export { WriterAvatar } from "./ui/WriterAvatar";
