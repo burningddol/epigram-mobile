@@ -32,7 +32,7 @@ export default function TabLayout(): ReactElement {
         tabBarActiveTintColor: '#454545',
         tabBarInactiveTintColor: '#abb8ce',
         tabBarLabelStyle: { fontFamily: 'Pretendard', fontSize: 12 },
-        tabBarStyle: { height: 64, paddingBottom: 8, paddingTop: 8 },
+        tabBarStyle: { height: 64, paddingBottom: 4, paddingTop: 12 },
       }}
     >
       <Tabs.Screen
