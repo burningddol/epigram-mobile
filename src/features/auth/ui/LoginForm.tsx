@@ -29,7 +29,7 @@ export function LoginForm(): ReactElement {
     try {
       const { user } = await signIn(data);
       queryClient.setQueryData(["me"], user);
-      router.replace("/(tabs)");
+      router.replace("/feeds");
     } catch {
       const message = "이메일 혹은 비밀번호를 확인해주세요.";
       setError("email", { message });
