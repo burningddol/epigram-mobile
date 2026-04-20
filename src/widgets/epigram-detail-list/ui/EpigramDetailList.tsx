@@ -1,5 +1,5 @@
 import { MessageCircle } from "lucide-react-native";
-import { useCallback, type ReactElement } from "react";
+import { useCallback, useMemo, type ReactElement } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 
 import { useEpigramComments, type Comment } from "~/entities/comment";
@@ -81,14 +81,20 @@ export function EpigramDetailList({
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useEpigramComments({ epigramId, limit: COMMENTS_PAGE_SIZE });
 
-  const comments = data?.pages.flatMap((page) => page.list) ?? [];
+  const comments = useMemo(
+    () => data?.pages.flatMap((page) => page.list) ?? [],
+    [data?.pages],
+  );
   const totalCount = data?.pages[0]?.totalCount;
   const currentUserId = me?.id;
-  const author = me ? { nickname: me.nickname, image: me.image } : null;
+  const author = useMemo(
+    () => (me ? { nickname: me.nickname, image: me.image } : null),
+    [me],
+  );
 
-  function handleEndReached(): void {
+  const handleEndReached = useCallback((): void => {
     if (hasNextPage && !isFetchingNextPage) fetchNextPage();
-  }
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   const renderItem = useCallback(
     ({ item }: { item: Comment }) => (
@@ -101,18 +107,21 @@ export function EpigramDetailList({
     [epigramId, currentUserId],
   );
 
-  const headerElement = (
-    <View className="gap-6">
-      {listHeader}
-      <SectionHeader
-        totalCount={totalCount}
-        epigramId={epigramId}
-        author={author}
-      />
-    </View>
+  const headerElement = useMemo(
+    () => (
+      <View className="gap-6">
+        {listHeader}
+        <SectionHeader
+          totalCount={totalCount}
+          epigramId={epigramId}
+          author={author}
+        />
+      </View>
+    ),
+    [listHeader, totalCount, epigramId, author],
   );
 
-  function renderEmpty(): ReactElement {
+  const renderEmpty = useCallback((): ReactElement => {
     if (isLoading) {
       return (
         <View className="gap-3 pt-4">
@@ -127,7 +136,7 @@ export function EpigramDetailList({
         <EmptyState />
       </View>
     );
-  }
+  }, [isLoading]);
 
   const footerElement = isFetchingNextPage ? (
     <View className="py-4">
@@ -141,7 +150,7 @@ export function EpigramDetailList({
       keyExtractor={(comment) => String(comment.id)}
       renderItem={renderItem}
       ListHeaderComponent={headerElement}
-      ListEmptyComponent={renderEmpty()}
+      ListEmptyComponent={renderEmpty}
       ListFooterComponent={footerElement}
       onEndReached={handleEndReached}
       onEndReachedThreshold={END_REACHED_THRESHOLD}
