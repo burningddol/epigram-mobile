@@ -4,7 +4,7 @@ import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } fro
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useMe } from "~/entities/user";
-import { LoginForm } from "~/features/auth";
+import { GuestLoginButton, LoginForm } from "~/features/auth";
 
 export function LoginScreen(): ReactElement | null {
   const { user, isLoading } = useMe();
@@ -32,6 +32,9 @@ export function LoginScreen(): ReactElement | null {
             <Text className="font-sans text-sm text-black-300">인생 명언을 모아보세요</Text>
           </View>
           <LoginForm />
+          <View className="mt-3">
+            <GuestLoginButton />
+          </View>
           <View className="mt-6 flex-row justify-center gap-1">
             <Text className="font-sans text-sm text-black-300">아직 회원이 아니신가요?</Text>
             <Pressable onPress={handleGoToSignUp} accessibilityRole="link">
