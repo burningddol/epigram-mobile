@@ -21,7 +21,7 @@ interface UseCommentEditReturn {
   isSubmitting: boolean;
   hasError: boolean;
   canSubmit: boolean;
-  setContent: (value: string) => void;
+  handleContentChange: (value: string) => void;
   handlePrivateToggle: () => void;
   handleSubmit: () => void;
   handleCancel: () => void;
@@ -42,6 +42,7 @@ export function useCommentEdit({
     mutate,
     isPending: isSubmitting,
     isError: hasError,
+    reset,
   } = useMutation({
     mutationFn: (body: UpdateCommentBody) => updateComment(commentId, body),
     onSuccess: () => {
@@ -53,6 +54,11 @@ export function useCommentEdit({
   });
 
   const canSubmit = content.trim().length > 0;
+
+  function handleContentChange(value: string): void {
+    setContent(value);
+    if (hasError) reset();
+  }
 
   function handlePrivateToggle(): void {
     setIsPrivate((prev) => !prev);
@@ -76,7 +82,7 @@ export function useCommentEdit({
     isSubmitting,
     hasError,
     canSubmit,
-    setContent,
+    handleContentChange,
     handlePrivateToggle,
     handleSubmit,
     handleCancel,

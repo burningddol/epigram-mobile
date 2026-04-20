@@ -28,7 +28,7 @@ export function CommentEditForm({
     isSubmitting,
     hasError,
     canSubmit,
-    setContent,
+    handleContentChange,
     handlePrivateToggle,
     handleSubmit,
     handleCancel,
@@ -44,7 +44,7 @@ export function CommentEditForm({
     <View className="gap-2 rounded-2xl border border-blue-400 bg-white p-3">
       <TextInput
         value={content}
-        onChangeText={setContent}
+        onChangeText={handleContentChange}
         maxLength={MAX_LENGTH}
         multiline
         numberOfLines={2}
