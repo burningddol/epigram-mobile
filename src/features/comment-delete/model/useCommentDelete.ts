@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Alert } from "react-native";
 
+import { commentKeys } from "~/entities/comment";
 import { apiClient } from "~/shared/api/client";
 
 interface UseCommentDeleteReturn {
@@ -20,11 +21,11 @@ export function useCommentDelete(
       apiClient.delete(`/comments/${commentId}`).then((res) => res.data),
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: ["epigrams", epigramId, "comments"],
+        queryKey: commentKeys.byEpigram(epigramId),
       });
       if (userId === undefined) return;
       queryClient.invalidateQueries({
-        queryKey: ["users", userId, "comments"],
+        queryKey: commentKeys.byUser(userId),
       });
     },
     onError: () => {

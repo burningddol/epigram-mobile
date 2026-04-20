@@ -6,7 +6,11 @@ import {
 
 import { apiClient } from "~/shared/api/client";
 
-import { epigramListResponseSchema, type EpigramListResponse } from "../model/schema";
+import {
+  epigramListResponseSchema,
+  type EpigramListResponse,
+} from "../model/schema";
+import { epigramKeys } from "./keys";
 
 interface UseEpigramsParams {
   limit: number;
@@ -23,7 +27,7 @@ export function useEpigrams({
   Error
 > {
   return useInfiniteQuery({
-    queryKey: ["epigrams", { limit, keyword, writerId }],
+    queryKey: epigramKeys.list({ limit, keyword, writerId }),
     queryFn: async ({ pageParam }) => {
       const params = new URLSearchParams({ limit: String(limit) });
       if (pageParam !== undefined) params.set("cursor", String(pageParam));

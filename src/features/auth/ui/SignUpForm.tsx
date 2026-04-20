@@ -6,7 +6,7 @@ import type { ReactElement } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 
-import { signUp } from "~/entities/user";
+import { signUp, userKeys } from "~/entities/user";
 import { Button, Input } from "~/shared/ui";
 
 import { signUpSchema, type SignUpFormValues } from "../model/signUpSchema";
@@ -34,14 +34,16 @@ export function SignUpForm(): ReactElement {
   async function onSubmit(data: SignUpFormValues): Promise<void> {
     try {
       const { user } = await signUp(data);
-      queryClient.setQueryData(["me"], user);
+      queryClient.setQueryData(userKeys.me(), user);
       router.replace("/feeds");
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 500) {
         setError("nickname", { message: "이미 사용 중인 닉네임입니다." });
         return;
       }
-      setError("email", { message: "회원가입에 실패했습니다. 다시 시도해주세요." });
+      setError("email", {
+        message: "회원가입에 실패했습니다. 다시 시도해주세요.",
+      });
     }
   }
 

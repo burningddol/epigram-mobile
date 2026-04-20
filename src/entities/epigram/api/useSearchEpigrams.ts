@@ -6,7 +6,11 @@ import {
 
 import { apiClient } from "~/shared/api/client";
 
-import { epigramListResponseSchema, type EpigramListResponse } from "../model/schema";
+import {
+  epigramListResponseSchema,
+  type EpigramListResponse,
+} from "../model/schema";
+import { epigramKeys } from "./keys";
 
 interface UseSearchEpigramsParams {
   keyword: string;
@@ -21,7 +25,7 @@ export function useSearchEpigrams({
   Error
 > {
   return useInfiniteQuery({
-    queryKey: ["search", "epigrams", keyword],
+    queryKey: epigramKeys.search(keyword),
     queryFn: async ({ pageParam }) => {
       const params = new URLSearchParams({ limit: String(limit), keyword });
       if (pageParam !== undefined) params.set("cursor", String(pageParam));

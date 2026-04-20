@@ -5,7 +5,7 @@ import type { ReactElement } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 
-import { signIn } from "~/entities/user";
+import { signIn, userKeys } from "~/entities/user";
 import { Button, Input } from "~/shared/ui";
 
 import { loginSchema, type LoginFormValues } from "../model/loginSchema";
@@ -28,7 +28,7 @@ export function LoginForm(): ReactElement {
   async function onSubmit(data: LoginFormValues): Promise<void> {
     try {
       const { user } = await signIn(data);
-      queryClient.setQueryData(["me"], user);
+      queryClient.setQueryData(userKeys.me(), user);
       router.replace("/feeds");
     } catch {
       const message = "이메일 혹은 비밀번호를 확인해주세요.";
