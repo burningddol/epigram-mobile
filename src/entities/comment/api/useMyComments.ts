@@ -6,7 +6,11 @@ import {
 
 import { apiClient } from "~/shared/api/client";
 
-import { commentListResponseSchema, type CommentListResponse } from "../model/schema";
+import {
+  commentListResponseSchema,
+  type CommentListResponse,
+} from "../model/schema";
+import { commentKeys } from "./keys";
 
 interface UseMyCommentsParams {
   userId: number;
@@ -21,13 +25,15 @@ export function useMyComments({
   Error
 > {
   return useInfiniteQuery({
-    queryKey: ["users", userId, "comments", { limit }],
+    queryKey: commentKeys.byUserList(userId, { limit }),
     enabled: userId > 0,
     queryFn: async ({ pageParam }) => {
       const params = new URLSearchParams({ limit: String(limit) });
       if (pageParam !== undefined) params.set("cursor", String(pageParam));
 
-      const response = await apiClient.get<unknown>(`/users/${userId}/comments?${params}`);
+      const response = await apiClient.get<unknown>(
+        `/users/${userId}/comments?${params}`,
+      );
       return commentListResponseSchema.parse(response.data);
     },
     initialPageParam: undefined as number | undefined,

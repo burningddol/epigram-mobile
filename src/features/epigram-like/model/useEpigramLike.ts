@@ -2,7 +2,7 @@ import { useCallback, useMemo } from "react";
 
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 
-import type { EpigramDetail } from "~/entities/epigram";
+import { epigramKeys, type EpigramDetail } from "~/entities/epigram";
 import { apiClient } from "~/shared/api/client";
 
 interface UseEpigramLikeReturn {
@@ -12,7 +12,7 @@ interface UseEpigramLikeReturn {
 
 export function useEpigramLike(epigramId: number): UseEpigramLikeReturn {
   const queryClient = useQueryClient();
-  const queryKey = useMemo(() => ["epigrams", epigramId], [epigramId]);
+  const queryKey = useMemo(() => epigramKeys.detail(epigramId), [epigramId]);
 
   const { mutate, isPending } = useMutation({
     mutationFn: async (isCurrentlyLiked: boolean): Promise<EpigramDetail> => {

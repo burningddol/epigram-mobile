@@ -3,7 +3,7 @@ import { router } from "expo-router";
 import { useState, type ReactElement } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
-import { signIn } from "~/entities/user";
+import { signIn, userKeys } from "~/entities/user";
 import { cn } from "~/shared/lib/cn";
 
 const GUEST_CREDENTIALS = {
@@ -21,7 +21,7 @@ export function GuestLoginButton(): ReactElement {
     setError(null);
     try {
       const { user } = await signIn(GUEST_CREDENTIALS);
-      queryClient.setQueryData(["me"], user);
+      queryClient.setQueryData(userKeys.me(), user);
       router.replace("/feeds");
     } catch {
       setError("게스트 로그인에 실패했습니다. 잠시 후 다시 시도해주세요.");

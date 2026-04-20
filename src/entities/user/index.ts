@@ -13,4 +13,5 @@ export { signInKakao } from "./api/kakao";
 export type { SignInKakaoBody } from "./api/kakao";
 export { getMe, updateMe } from "./api/user";
 export type { UpdateMeBody } from "./api/user";
+export { userKeys } from "./api/keys";
 export { useMe } from "./api/useMe";

@@ -3,6 +3,7 @@ import { useQuery, type UseQueryResult } from "@tanstack/react-query";
 import { apiClient } from "~/shared/api/client";
 
 import { emotionLogArraySchema, type EmotionLog } from "../model/schema";
+import { emotionLogKeys } from "./keys";
 
 interface UseMonthlyEmotionsParams {
   userId: number;
@@ -16,7 +17,7 @@ export function useMonthlyEmotions({
   month,
 }: UseMonthlyEmotionsParams): UseQueryResult<EmotionLog[], Error> {
   return useQuery({
-    queryKey: ["emotionLogs", "monthly", userId, year, month],
+    queryKey: emotionLogKeys.monthly(userId, year, month),
     enabled: userId > 0,
     queryFn: async () => {
       const response = await apiClient.get<unknown>("/emotionLogs/monthly", {
