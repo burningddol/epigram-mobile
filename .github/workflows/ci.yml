@@ -57,4 +57,20 @@ jobs:
         run: npm run lint
 
       - name: Build (web bundle)
-        run: npx expo export --platform web
+        id: build
+        run: npx expo export --platform web > /tmp/build.log 2>&1
+
+      - name: Post build log as PR comment on failure
+        if: failure() && steps.build.outcome == 'failure' && github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          {
+            echo '## CI debug: expo export web failure log (last 200 lines)'
+            echo ''
+            echo '```'
+            tail -200 /tmp/build.log
+            echo '```'
+          } > /tmp/build-comment.md
+          gh pr comment "$PR_NUMBER" --body-file /tmp/build-comment.md --repo "$GITHUB_REPOSITORY"
