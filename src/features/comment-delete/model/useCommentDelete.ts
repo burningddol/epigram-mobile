@@ -1,8 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Alert } from "react-native";
 
-import { commentKeys } from "~/entities/comment";
-import { apiClient } from "~/shared/api/client";
+import {
+  commentKeys,
+  deleteComment as deleteCommentApi,
+} from "~/entities/comment";
 
 interface UseCommentDeleteReturn {
   deleteComment: () => void;
@@ -17,8 +19,7 @@ export function useCommentDelete(
   const queryClient = useQueryClient();
 
   const { mutate, isPending: isDeleting } = useMutation({
-    mutationFn: () =>
-      apiClient.delete(`/comments/${commentId}`).then((res) => res.data),
+    mutationFn: () => deleteCommentApi(commentId),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: commentKeys.byEpigram(epigramId),

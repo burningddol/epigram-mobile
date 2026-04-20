@@ -1,13 +1,11 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
 
-import { commentKeys, type Comment } from "~/entities/comment";
-import { apiClient } from "~/shared/api/client";
-
-interface UpdateCommentBody {
-  isPrivate?: boolean;
-  content?: string;
-}
+import {
+  commentKeys,
+  updateComment,
+  type UpdateCommentBody,
+} from "~/entities/comment";
 
 interface UseCommentEditParams {
   commentId: number;
@@ -45,10 +43,7 @@ export function useCommentEdit({
     isPending: isSubmitting,
     isError: hasError,
   } = useMutation({
-    mutationFn: (body: UpdateCommentBody) =>
-      apiClient
-        .patch<Comment>(`/comments/${commentId}`, body)
-        .then((res) => res.data),
+    mutationFn: (body: UpdateCommentBody) => updateComment(commentId, body),
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: commentKeys.byEpigram(epigramId),
