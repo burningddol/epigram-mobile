@@ -6,10 +6,6 @@ on:
   push:
     branches: [main]
 
-permissions:
-  contents: read
-  pull-requests: write
-
 jobs:
   ci:
     name: Type · Lint · Build
@@ -25,30 +21,8 @@ jobs:
           node-version: 22
           cache: npm
 
-      - name: Debug versions
-        run: |
-          node --version
-          npm --version
-          npm config get registry
-
       - name: Install dependencies
-        id: install
-        run: npm ci --verbose > /tmp/npm-install.log 2>&1
-
-      - name: Post install log as PR comment on failure
-        if: failure() && steps.install.outcome == 'failure' && github.event_name == 'pull_request'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          {
-            echo '## CI debug: npm ci failure log (last 200 lines)'
-            echo ''
-            echo '```'
-            tail -200 /tmp/npm-install.log
-            echo '```'
-          } > /tmp/comment.md
-          gh pr comment "$PR_NUMBER" --body-file /tmp/comment.md --repo "$GITHUB_REPOSITORY"
+        run: npm ci
 
       - name: Type check
         run: npm run typecheck
@@ -57,23 +31,7 @@ jobs:
         run: npm run lint
 
       - name: Build (web bundle)
-        id: build
         env:
           EXPO_PUBLIC_API_BASE: https://ci.example.com
           EXPO_PUBLIC_TEAM_ID: ci
-        run: npx expo export --platform web > /tmp/build.log 2>&1
-
-      - name: Post build log as PR comment on failure
-        if: failure() && steps.build.outcome == 'failure' && github.event_name == 'pull_request'
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: |
-          {
-            echo '## CI debug: expo export web failure log (last 200 lines)'
-            echo ''
-            echo '```'
-            tail -200 /tmp/build.log
-            echo '```'
-          } > /tmp/build-comment.md
-          gh pr comment "$PR_NUMBER" --body-file /tmp/build-comment.md --repo "$GITHUB_REPOSITORY"
+        run: npx expo export --platform web
