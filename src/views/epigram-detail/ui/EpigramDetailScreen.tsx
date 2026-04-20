@@ -1,4 +1,4 @@
-import { router } from "expo-router";
+import { Redirect, router } from "expo-router";
 import { ArrowLeft, ExternalLink } from "lucide-react-native";
 import { type ReactElement } from "react";
 import {
@@ -12,6 +12,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useEpigramDetail, type EpigramDetail } from "~/entities/epigram";
+import { useMe } from "~/entities/user";
 import { LikeButton } from "~/features/epigram-like";
 
 interface EpigramDetailScreenProps {
@@ -118,15 +119,27 @@ function Reference({
 
 export function EpigramDetailScreen({
   epigramId,
-}: EpigramDetailScreenProps): ReactElement {
-  const { data: epigram, isLoading, isError } = useEpigramDetail(epigramId);
+}: EpigramDetailScreenProps): ReactElement | null {
+  const { user, isLoading: isMeLoading } = useMe();
+  const {
+    data: epigram,
+    isLoading: isEpigramLoading,
+    isError,
+  } = useEpigramDetail(epigramId);
+
+  if (isMeLoading) return null;
+  if (!user) return <Redirect href="/login" />;
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       <View className="flex-row items-center px-screen-x py-2">
         <BackButton />
       </View>
-      <ShowContent epigram={epigram} isLoading={isLoading} isError={isError} />
+      <ShowContent
+        epigram={epigram}
+        isLoading={isEpigramLoading}
+        isError={isError}
+      />
     </SafeAreaView>
   );
 }
