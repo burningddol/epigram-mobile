@@ -1,11 +1,17 @@
-import { router } from "expo-router";
+import { Redirect, router } from "expo-router";
 import type { ReactElement } from "react";
 import { KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import { useMe } from "~/entities/user";
 import { SignUpForm } from "~/features/auth";
 
-export function SignUpScreen(): ReactElement {
+export function SignUpScreen(): ReactElement | null {
+  const { user, isLoading } = useMe();
+
+  if (isLoading) return null;
+  if (user) return <Redirect href="/feeds" />;
+
   function handleGoToLogin(): void {
     router.replace("/login");
   }
