@@ -3,7 +3,9 @@ import { ArrowLeft, ExternalLink } from "lucide-react-native";
 import { type ReactElement } from "react";
 import {
   ActivityIndicator,
+  KeyboardAvoidingView,
   Linking,
+  Platform,
   Pressable,
   StyleSheet,
   Text,
@@ -14,6 +16,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import { useEpigramDetail, type EpigramDetail } from "~/entities/epigram";
 import { useMe } from "~/entities/user";
 import { LikeButton } from "~/features/epigram-like";
+import { CommentSection } from "~/widgets/comment-section";
 
 interface EpigramDetailScreenProps {
   epigramId: number;
@@ -82,11 +85,7 @@ function ErrorState(): ReactElement {
   );
 }
 
-function Reference({
-  epigram,
-}: {
-  epigram: EpigramDetail;
-}): ReactElement | null {
+function Reference({ epigram }: { epigram: EpigramDetail }): ReactElement | null {
   if (!epigram.referenceTitle) return null;
 
   async function handleOpenReference(): Promise<void> {
@@ -117,6 +116,39 @@ function Reference({
   );
 }
 
+function EpigramCard({ epigram }: { epigram: EpigramDetail }): ReactElement {
+  return (
+    <View className="w-full overflow-hidden rounded-2xl border border-line-100 bg-surface p-6 shadow-card">
+      <RuledLines />
+      <View className="gap-6">
+        <Text className="font-serif text-lg leading-relaxed text-black-700">
+          {epigram.content}
+        </Text>
+        <Text className="text-right font-serif text-base text-blue-400">
+          - {epigram.author} -
+        </Text>
+        <Reference epigram={epigram} />
+        {epigram.tags.length > 0 && (
+          <View className="flex-row flex-wrap justify-end gap-2">
+            {epigram.tags.map((tag) => (
+              <Text key={tag.id} className="font-serif text-sm text-blue-400">
+                #{tag.name}
+              </Text>
+            ))}
+          </View>
+        )}
+        <View className="items-center pt-2">
+          <LikeButton
+            epigramId={epigram.id}
+            likeCount={epigram.likeCount}
+            isLiked={epigram.isLiked}
+          />
+        </View>
+      </View>
+    </View>
+  );
+}
+
 export function EpigramDetailScreen({
   epigramId,
 }: EpigramDetailScreenProps): ReactElement | null {
@@ -135,22 +167,30 @@ export function EpigramDetailScreen({
       <View className="flex-row items-center px-screen-x py-2">
         <BackButton />
       </View>
-      <ShowContent
-        epigram={epigram}
-        isLoading={isEpigramLoading}
-        isError={isError}
-      />
+      <KeyboardAvoidingView
+        className="flex-1"
+        behavior={Platform.OS === "ios" ? "padding" : undefined}
+      >
+        <ShowContent
+          epigramId={epigramId}
+          epigram={epigram}
+          isLoading={isEpigramLoading}
+          isError={isError}
+        />
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
 
 interface ShowContentProps {
+  epigramId: number;
   epigram: EpigramDetail | undefined;
   isLoading: boolean;
   isError: boolean;
 }
 
 function ShowContent({
+  epigramId,
   epigram,
   isLoading,
   isError,
@@ -159,35 +199,9 @@ function ShowContent({
   if (isError || !epigram) return <ErrorState />;
 
   return (
-    <View className="flex-1 px-screen-x py-4">
-      <View className="w-full overflow-hidden rounded-2xl border border-line-100 bg-surface p-6 shadow-card">
-        <RuledLines />
-        <View className="gap-6">
-          <Text className="font-serif text-lg leading-relaxed text-black-700">
-            {epigram.content}
-          </Text>
-          <Text className="text-right font-serif text-base text-blue-400">
-            - {epigram.author} -
-          </Text>
-          <Reference epigram={epigram} />
-          {epigram.tags.length > 0 && (
-            <View className="flex-row flex-wrap justify-end gap-2">
-              {epigram.tags.map((tag) => (
-                <Text key={tag.id} className="font-serif text-sm text-blue-400">
-                  #{tag.name}
-                </Text>
-              ))}
-            </View>
-          )}
-          <View className="items-center pt-2">
-            <LikeButton
-              epigramId={epigram.id}
-              likeCount={epigram.likeCount}
-              isLiked={epigram.isLiked}
-            />
-          </View>
-        </View>
-      </View>
-    </View>
+    <CommentSection
+      epigramId={epigramId}
+      listHeader={<EpigramCard epigram={epigram} />}
+    />
   );
 }
