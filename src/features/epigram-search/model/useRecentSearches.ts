@@ -33,18 +33,14 @@ export function useRecentSearches(): UseRecentSearchesResult {
         const parsed = parseStored(raw);
         if (parsed) setRecentSearches(parsed);
       })
-      .catch(() => {
-        // 읽기 실패는 빈 배열로 폴백
-      });
+      .catch(() => {});
     return () => {
       cancelled = true;
     };
   }, []);
 
   const persist = useCallback((next: string[]): void => {
-    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next)).catch(() => {
-      // 저장 실패는 다음 기회로 미룸
-    });
+    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next)).catch(() => {});
   }, []);
 
   const addRecentSearch = useCallback(
