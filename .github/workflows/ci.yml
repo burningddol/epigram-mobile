@@ -58,6 +58,9 @@ jobs:
 
       - name: Build (web bundle)
         id: build
+        env:
+          EXPO_PUBLIC_API_BASE: https://ci.example.com
+          EXPO_PUBLIC_TEAM_ID: ci
         run: npx expo export --platform web > /tmp/build.log 2>&1
 
       - name: Post build log as PR comment on failure
