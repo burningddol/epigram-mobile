@@ -28,7 +28,17 @@ jobs:
           npm config get registry
 
       - name: Install dependencies
-        run: npm ci --verbose
+        id: install
+        run: npm ci --verbose > /tmp/npm-install.log 2>&1
+
+      - name: Show install log on failure
+        if: failure() && steps.install.outcome == 'failure'
+        run: |
+          echo '## npm ci log (last 300 lines)' >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -300 /tmp/npm-install.log >> $GITHUB_STEP_SUMMARY
+          echo '```' >> $GITHUB_STEP_SUMMARY
+          tail -300 /tmp/npm-install.log
 
       - name: Type check
         run: npm run typecheck
