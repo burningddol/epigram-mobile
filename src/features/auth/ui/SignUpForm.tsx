@@ -35,7 +35,7 @@ export function SignUpForm(): ReactElement {
     try {
       const { user } = await signUp(data);
       queryClient.setQueryData(["me"], user);
-      router.replace("/(tabs)");
+      router.replace("/feeds");
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 500) {
         setError("nickname", { message: "이미 사용 중인 닉네임입니다." });
