@@ -8,7 +8,7 @@ on:
 
 jobs:
   ci:
-    name: Type · Lint
+    name: Type · Lint · Build
     runs-on: ubuntu-latest
 
     steps:
@@ -45,3 +45,6 @@ jobs:
 
       - name: Lint
         run: npm run lint
+
+      - name: Build (web bundle)
+        run: npx expo export --platform web
