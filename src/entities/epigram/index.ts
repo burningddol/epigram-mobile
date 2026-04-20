@@ -13,6 +13,8 @@ export type {
 
 export { createEpigram } from "./api/createEpigram";
 export type { CreateEpigramRequest } from "./api/createEpigram";
+export { updateEpigram } from "./api/updateEpigram";
+export type { UpdateEpigramRequest } from "./api/updateEpigram";
 export { epigramKeys } from "./api/keys";
 export { useEpigramDetail } from "./api/useEpigramDetail";
 export { useEpigrams } from "./api/useEpigrams";
