@@ -1,11 +1,11 @@
-import { Tabs } from 'expo-router';
-import { Home, Plus, Search, User } from 'lucide-react-native';
-import { ReactElement } from 'react';
-import { Pressable, View } from 'react-native';
-import type { BottomTabBarButtonProps } from '@react-navigation/bottom-tabs';
+import type { BottomTabBarButtonProps } from "@react-navigation/bottom-tabs";
+import { Tabs } from "expo-router";
+import { Home, Plus, Search, User } from "lucide-react-native";
+import { ReactElement } from "react";
+import { Pressable, View } from "react-native";
 
 export const unstable_settings = {
-  initialRouteName: 'feeds',
+  initialRouteName: "feeds",
 };
 
 function CenterAddButton(props: BottomTabBarButtonProps): ReactElement {
@@ -29,37 +29,37 @@ export default function TabLayout(): ReactElement {
     <Tabs
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#454545',
-        tabBarInactiveTintColor: '#abb8ce',
-        tabBarLabelStyle: { fontFamily: 'Pretendard', fontSize: 12 },
-        tabBarStyle: { height: 64, paddingBottom: 4, paddingTop: 12 },
+        tabBarActiveTintColor: "#454545",
+        tabBarInactiveTintColor: "#abb8ce",
+        tabBarLabelStyle: { fontFamily: "Pretendard", fontSize: 12 },
+        tabBarStyle: { height: 80, paddingBottom: 8, paddingTop: 4 },
       }}
     >
       <Tabs.Screen
         name="feeds"
         options={{
-          title: '피드',
+          title: "피드",
           tabBarIcon: ({ color }) => <Home size={24} color={color} />,
         }}
       />
       <Tabs.Screen
         name="search"
         options={{
-          title: '검색',
+          title: "검색",
           tabBarIcon: ({ color }) => <Search size={24} color={color} />,
         }}
       />
       <Tabs.Screen
         name="addepigram"
         options={{
-          title: '',
+          title: "",
           tabBarButton: (props) => <CenterAddButton {...props} />,
         }}
       />
       <Tabs.Screen
         name="mypage"
         options={{
-          title: '마이',
+          title: "마이",
           tabBarIcon: ({ color }) => <User size={24} color={color} />,
         }}
       />
