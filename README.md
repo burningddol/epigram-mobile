@@ -17,9 +17,6 @@
 
 <br />
 
-<br />
-
-## 📱 직접 체험해보기
 
 별도 빌드·설치 없이 **Expo Go 앱**만으로 실기기에서 바로 실행해볼 수 있어요.
 
@@ -27,7 +24,6 @@
 2. 아래 QR을 Expo Go 로 스캔 
 
 <img width="200" height="200" alt="image" src="https://github.com/user-attachments/assets/cc0c71fa-0d9e-4fa1-b3ab-68d75284a38a" />
-
 
 
 <br />
