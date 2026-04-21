@@ -13,6 +13,7 @@ interface CommentAuthor {
 interface CommentFormProps {
   epigramId: number;
   author: CommentAuthor | null;
+  userId?: number;
 }
 
 const MAX_LENGTH = 100;
@@ -24,6 +25,7 @@ const PLACEHOLDER_AUTHOR: CommentAuthor = {
 export function CommentForm({
   epigramId,
   author,
+  userId,
 }: CommentFormProps): ReactElement {
   const {
     content,
@@ -34,7 +36,7 @@ export function CommentForm({
     handleContentChange,
     handlePrivateToggle,
     handleSubmit,
-  } = useCommentCreate(epigramId);
+  } = useCommentCreate({ epigramId, userId });
 
   return (
     <View className="flex-row gap-3">

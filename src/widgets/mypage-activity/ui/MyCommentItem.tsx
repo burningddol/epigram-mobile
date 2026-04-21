@@ -39,7 +39,12 @@ export function MyCommentItem({
   }
 
   return (
-    <View className="gap-3 border-t border-line-200 bg-background px-4 py-5 first:border-t-0">
+    <Pressable
+      onPress={handleCardPress}
+      accessibilityRole="button"
+      accessibilityLabel="에피그램으로 이동"
+      className="gap-3 border-t border-line-200 bg-background px-4 py-5 first:border-t-0"
+    >
       <View className="flex-row items-start gap-3">
         <UserAvatar
           image={comment.writer.image}
@@ -67,13 +72,11 @@ export function MyCommentItem({
             </Pressable>
           </View>
 
-          <Pressable onPress={handleCardPress} className="mt-2">
-            <Text className="font-sans text-sm leading-relaxed text-black-700">
-              {comment.content}
-            </Text>
-          </Pressable>
+          <Text className="mt-2 font-sans text-sm leading-relaxed text-black-700">
+            {comment.content}
+          </Text>
         </View>
       </View>
-    </View>
+    </Pressable>
   );
 }
