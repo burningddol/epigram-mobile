@@ -24,7 +24,7 @@
 별도 빌드·설치 없이 **Expo Go 앱**만으로 실기기에서 바로 실행해볼 수 있어요.
 
 1. App Store · Play Store 에서 **Expo Go** 설치
-2. 아래 QR을 Expo Go 로 스캔 (또는 모바일에서 링크 탭)
+2. 아래 QR을 Expo Go 로 스캔 
 
 <img width="200" height="200" alt="image" src="https://github.com/user-attachments/assets/cc0c71fa-0d9e-4fa1-b3ab-68d75284a38a" />
 
