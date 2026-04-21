@@ -1,11 +1,18 @@
 import { Redirect, router } from "expo-router";
-import { Pencil } from "lucide-react-native";
+import { MoreVertical } from "lucide-react-native";
 import { type ReactElement } from "react";
-import { KeyboardAvoidingView, Platform, Pressable, View } from "react-native";
+import {
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  View,
+} from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useEpigramDetail } from "~/entities/epigram";
 import { useMe } from "~/entities/user";
+import { useEpigramDelete } from "~/features/epigram-delete";
 import { ErrorState, LoadingState } from "~/shared/ui";
 import { EpigramDetailCard } from "~/widgets/epigram-detail-card";
 import { EpigramDetailList } from "~/widgets/epigram-detail-list";
@@ -15,23 +22,38 @@ interface EpigramDetailScreenProps {
   epigramId: number;
 }
 
-interface EditButtonProps {
+interface ActionMenuProps {
   epigramId: number;
 }
 
-function EditButton({ epigramId }: EditButtonProps): ReactElement {
-  function handleEdit(): void {
-    router.push(`/epigrams/${epigramId}/edit`);
+function ActionMenu({ epigramId }: ActionMenuProps): ReactElement {
+  const { handleDelete, isDeleting } = useEpigramDelete(epigramId);
+
+  function handleOpenMenu(): void {
+    Alert.alert(
+      "에피그램",
+      undefined,
+      [
+        {
+          text: "수정",
+          onPress: () => router.push(`/epigrams/${epigramId}/edit`),
+        },
+        { text: "삭제", style: "destructive", onPress: handleDelete },
+        { text: "취소", style: "cancel" },
+      ],
+      { cancelable: true },
+    );
   }
 
   return (
     <Pressable
-      onPress={handleEdit}
+      onPress={handleOpenMenu}
+      disabled={isDeleting}
       accessibilityRole="button"
-      accessibilityLabel="에피그램 수정"
+      accessibilityLabel="에피그램 메뉴 열기"
       className="h-10 w-10 items-center justify-center rounded-full active:bg-blue-200"
     >
-      <Pencil size={20} color="#454545" />
+      <MoreVertical size={22} color="#454545" />
     </Pressable>
   );
 }
@@ -68,7 +90,7 @@ export function EpigramDetailScreen({
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
       <View className="flex-row items-center justify-between px-screen-x py-2">
         <HeaderBackButton />
-        {isOwner && <EditButton epigramId={epigramId} />}
+        {isOwner && <ActionMenu epigramId={epigramId} />}
       </View>
       <KeyboardAvoidingView
         className="flex-1"
