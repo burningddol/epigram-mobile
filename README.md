@@ -49,7 +49,7 @@
 
 ## 😎 Development Description
 
-- 기존 **Next.js 웹 프로젝트를 React Native로 포팅**하며, 웹의 API 스키마·도메인 타입·컴포넌트 인터페이스를 재사용해 기능 개발 속도를 확보했어요.
+- 기존 **[Next.js 웹 프로젝트](https://github.com/burningddol/epigram)를 React Native로 포팅**하며, 웹의 API 스키마·도메인 타입·컴포넌트 인터페이스를 재사용해 기능 개발 속도를 확보했어요.
 - **Claude-design 기반 디자인 추출 워크플로우**로 기존 웹프로젝트의 컬러 토큰·타이포그래피·컴포넌트 스펙을 분석하고, 이를 NativeWind v4 디자인 시스템으로 **1:1 포팅**했어요.
 - TanStack Query `useInfiniteQuery`로 피드 무한 스크롤과 캐싱을 관리해 서버 상태 일관성을 확보했어요.
 - React Hook Form + Zod 스키마 기반 **런타임 검증**으로 타입 안전한 폼을 작성했어요.
