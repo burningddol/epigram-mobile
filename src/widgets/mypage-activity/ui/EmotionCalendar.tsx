@@ -106,7 +106,7 @@ interface DayCellProps {
 }
 
 function DayCell({ cell, emotion, isToday }: DayCellProps): ReactElement {
-  const borderClass = isToday ? "border-blue-500" : "border-line-200";
+  const borderClass = isToday ? "border-red-400 border-2" : "border-line-200";
   const bgClass = cell.isCurrentMonth ? "bg-white" : "bg-background/60";
   const dayTextClass = cell.isCurrentMonth ? "text-black-500" : "text-gray-200";
 
@@ -117,7 +117,9 @@ function DayCell({ cell, emotion, isToday }: DayCellProps): ReactElement {
     >
       {emotion ? (
         <>
-          <Text className="font-sans text-[10px] font-semibold text-gray-300">
+          <Text
+            className={`font-sans text-[12px] font-semibold ${dayTextClass}`}
+          >
             {cell.day}
           </Text>
           <Text style={{ fontSize: 18, marginTop: 2 }}>
@@ -210,7 +212,7 @@ export function EmotionCalendar({
         ))}
       </View>
 
-      <View className="flex-row flex-wrap">
+      <View className="flex-row flex-wrap border-line-200 border">
         {cells.map((cell, index) => (
           <View
             key={`${cell.dateKey}-${index}`}
