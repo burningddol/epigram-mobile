@@ -1,34 +1,24 @@
-import { useEffect, type ReactElement } from "react";
+import { type ReactElement } from "react";
 import { Text, View } from "react-native";
 
 import { useMyComments } from "~/entities/comment";
 
 import { LoadMoreButton } from "./LoadMoreButton";
 import { MyCommentItem } from "./MyCommentItem";
-
-const PAGE_SIZE = 3;
+import { MYPAGE_LIST_PAGE_SIZE } from "./constants";
 
 interface MyCommentListProps {
   userId: number;
-  onTotalCount: (count: number) => void;
 }
 
-export function MyCommentList({
-  userId,
-  onTotalCount,
-}: MyCommentListProps): ReactElement {
+export function MyCommentList({ userId }: MyCommentListProps): ReactElement {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useMyComments({
       userId,
-      limit: PAGE_SIZE,
+      limit: MYPAGE_LIST_PAGE_SIZE,
     });
 
   const comments = data?.pages.flatMap((page) => page.list) ?? [];
-  const totalCount = data?.pages[0]?.totalCount ?? 0;
-
-  useEffect(() => {
-    onTotalCount(totalCount);
-  }, [totalCount, onTotalCount]);
 
   if (comments.length === 0) {
     return (

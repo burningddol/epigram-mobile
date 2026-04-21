@@ -1,37 +1,28 @@
 import { type ReactElement } from "react";
 import { Pressable, Text, View } from "react-native";
 
-import { type Emotion } from "~/entities/emotion-log";
+import {
+  EMOTION_META,
+  EMOTION_ORDER,
+  type Emotion,
+} from "~/entities/emotion-log";
 
 import { useEmotionSelect } from "../model/useEmotionSelect";
 
-interface EmotionOption {
-  value: Emotion;
-  emoji: string;
-  label: string;
-}
-
-const EMOTION_OPTIONS: readonly EmotionOption[] = [
-  { value: "MOVED", emoji: "🥰", label: "감동" },
-  { value: "HAPPY", emoji: "😊", label: "기쁨" },
-  { value: "WORRIED", emoji: "🤔", label: "고민" },
-  { value: "SAD", emoji: "😢", label: "슬픔" },
-  { value: "ANGRY", emoji: "😠", label: "분노" },
-];
-
 interface EmotionButtonProps {
-  option: EmotionOption;
+  emotion: Emotion;
   isSelected: boolean;
   disabled: boolean;
   onPress: () => void;
 }
 
 function EmotionButton({
-  option,
+  emotion,
   isSelected,
   disabled,
   onPress,
 }: EmotionButtonProps): ReactElement {
+  const { emoji, label } = EMOTION_META[emotion];
   const containerClass = isSelected
     ? "bg-blue-100 border-blue-300"
     : "bg-background border-line-200";
@@ -44,16 +35,16 @@ function EmotionButton({
       onPress={onPress}
       disabled={disabled}
       accessibilityRole="button"
-      accessibilityLabel={`${option.label} 감정 선택`}
+      accessibilityLabel={`${label} 감정 선택`}
       accessibilityState={{ selected: isSelected, disabled }}
       className="items-center gap-2"
     >
       <View
         className={`h-16 w-16 items-center justify-center rounded-2xl border ${containerClass}`}
       >
-        <Text style={{ fontSize: 32 }}>{option.emoji}</Text>
+        <Text style={{ fontSize: 32 }}>{emoji}</Text>
       </View>
-      <Text className={`font-sans text-xs ${labelClass}`}>{option.label}</Text>
+      <Text className={`font-sans text-xs ${labelClass}`}>{label}</Text>
     </Pressable>
   );
 }
@@ -72,13 +63,13 @@ export function EmotionSelector(): ReactElement {
         오늘의 감정은 어떤가요?
       </Text>
       <View className="flex-row items-start justify-between">
-        {EMOTION_OPTIONS.map((option) => (
+        {EMOTION_ORDER.map((emotion) => (
           <EmotionButton
-            key={option.value}
-            option={option}
-            isSelected={todayEmotion === option.value}
+            key={emotion}
+            emotion={emotion}
+            isSelected={todayEmotion === emotion}
             disabled={isSubmitting}
-            onPress={() => handlePress(option.value)}
+            onPress={() => handlePress(emotion)}
           />
         ))}
       </View>

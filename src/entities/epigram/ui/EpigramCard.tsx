@@ -1,7 +1,7 @@
 import { memo, type ReactElement } from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 
-import type { Epigram } from "~/entities/epigram";
+import type { Epigram } from "../model/schema";
 
 interface EpigramCardProps {
   epigram: Epigram;

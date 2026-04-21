@@ -8,8 +8,7 @@ import {
   type ListRenderItem,
 } from "react-native";
 
-import { useEpigrams, type Epigram } from "~/entities/epigram";
-import { EpigramCard } from "~/widgets/epigram-card";
+import { EpigramCard, useEpigrams, type Epigram } from "~/entities/epigram";
 
 const FEED_PAGE_SIZE = 10;
 

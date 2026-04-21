@@ -2,15 +2,11 @@ import { ChevronLeft, ChevronRight } from "lucide-react-native";
 import { useMemo, useState, type ReactElement } from "react";
 import { Pressable, Text, View } from "react-native";
 
-import { useMonthlyEmotions, type Emotion } from "~/entities/emotion-log";
-
-const EMOTION_EMOJI: Record<Emotion, string> = {
-  MOVED: "🥰",
-  HAPPY: "😊",
-  WORRIED: "🤔",
-  SAD: "😢",
-  ANGRY: "😠",
-};
+import {
+  EMOTION_META,
+  useMonthlyEmotions,
+  type Emotion,
+} from "~/entities/emotion-log";
 
 const WEEKDAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
 const TODAY = new Date();
@@ -132,7 +128,7 @@ function DayCell({ cell, emotion, isToday }: DayCellProps): ReactElement {
             {cell.day}
           </Text>
           <Text style={{ fontSize: 18, marginTop: 2 }}>
-            {EMOTION_EMOJI[emotion]}
+            {EMOTION_META[emotion].emoji}
           </Text>
         </>
       ) : (
