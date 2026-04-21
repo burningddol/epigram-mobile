@@ -8,7 +8,6 @@ import { View } from "react-native";
 import { signIn, userKeys } from "~/entities/user";
 import { Button, Input } from "~/shared/ui";
 
-import { useAuthStore } from "../model/authStore";
 import { loginSchema, type LoginFormValues } from "../model/loginSchema";
 
 const DEFAULT_VALUES: LoginFormValues = { email: "", password: "" };
@@ -43,7 +42,6 @@ export function LoginForm(): ReactElement {
     try {
       const { user } = await signIn(data);
       queryClient.setQueryData(userKeys.me(), user);
-      useAuthStore.getState().setAuthenticated();
       router.replace(resolveRedirectTarget(redirect));
     } catch {
       const message = "이메일 혹은 비밀번호를 확인해주세요.";

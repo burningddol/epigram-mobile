@@ -1,4 +1,3 @@
-export { useAuthStore } from "./model/authStore";
 export { loginSchema } from "./model/loginSchema";
 export type { LoginFormValues } from "./model/loginSchema";
 export { signUpSchema } from "./model/signUpSchema";

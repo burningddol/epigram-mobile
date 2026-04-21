@@ -65,7 +65,7 @@
 - TanStack Query `useInfiniteQuery`로 피드 무한 스크롤과 캐싱을 관리해 서버 상태 일관성을 확보했어요.
 - React Hook Form + Zod 스키마 기반 **런타임 검증**으로 타입 안전한 폼을 작성했어요.
 - ErrorBoundary와 선언적 에러 처리 패턴으로 렌더링 에러를 일관되게 관리해요.
-- Zustand를 이용해 클라이언트 상태를 관리하고, 서버 상태와 명확히 분리했어요.
+- 인증 상태와 user 객체를 **TanStack Query 캐시 단일 진실 공급원**으로 통일해, 별도 클라이언트 store 없이 `useMe()` 훅 하나로 전역 구독·갱신을 처리했어요. 토큰은 Expo SecureStore(Keychain · Keystore)에 분리 저장합니다.
 
 <br />
 

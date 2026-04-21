@@ -13,7 +13,7 @@ import { useEffect, type ReactElement } from "react";
 import { Pressable, SafeAreaView, Text, View } from "react-native";
 import "react-native-reanimated";
 
-import { useAuthStore, useSessionExpiryRedirect } from "~/features/auth";
+import { useSessionExpiryRedirect } from "~/features/auth";
 import { QueryProvider } from "~/shared/api/QueryProvider";
 
 SplashScreen.preventAutoHideAsync();
@@ -56,31 +56,11 @@ export function ErrorBoundary({
   );
 }
 
-export default function RootLayout() {
-  const [fontsLoaded, fontsError] = useFonts({
-    Pretendard: require("pretendard/dist/public/variable/PretendardVariable.ttf"),
-    NanumMyeongjo: NanumMyeongjo_400Regular,
-    "NanumMyeongjo-Bold": NanumMyeongjo_700Bold,
-  });
-
+function AppShell(): ReactElement {
   useSessionExpiryRedirect();
 
-  useEffect(() => {
-    void useAuthStore.getState().initialize();
-  }, []);
-
-  useEffect(() => {
-    if (fontsLoaded || fontsError) {
-      SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded, fontsError]);
-
-  if (!fontsLoaded && !fontsError) {
-    return null;
-  }
-
   return (
-    <QueryProvider>
+    <>
       <Stack>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />
@@ -95,6 +75,30 @@ export default function RootLayout() {
         />
       </Stack>
       <StatusBar style="auto" />
+    </>
+  );
+}
+
+export default function RootLayout() {
+  const [fontsLoaded, fontsError] = useFonts({
+    Pretendard: require("pretendard/dist/public/variable/PretendardVariable.ttf"),
+    NanumMyeongjo: NanumMyeongjo_400Regular,
+    "NanumMyeongjo-Bold": NanumMyeongjo_700Bold,
+  });
+
+  useEffect(() => {
+    if (fontsLoaded || fontsError) {
+      SplashScreen.hideAsync();
+    }
+  }, [fontsLoaded, fontsError]);
+
+  if (!fontsLoaded && !fontsError) {
+    return null;
+  }
+
+  return (
+    <QueryProvider>
+      <AppShell />
     </QueryProvider>
   );
 }

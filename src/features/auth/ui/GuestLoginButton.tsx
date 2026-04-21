@@ -6,8 +6,6 @@ import { ActivityIndicator, Pressable, Text, View } from "react-native";
 import { signIn, userKeys } from "~/entities/user";
 import { cn } from "~/shared/lib/cn";
 
-import { useAuthStore } from "../model/authStore";
-
 const GUEST_CREDENTIALS = {
   email: "guest13325@naver.com",
   password: "@qwer1234",
@@ -24,7 +22,6 @@ export function GuestLoginButton(): ReactElement {
     try {
       const { user } = await signIn(GUEST_CREDENTIALS);
       queryClient.setQueryData(userKeys.me(), user);
-      useAuthStore.getState().setAuthenticated();
       router.replace("/feeds");
     } catch {
       setError("게스트 로그인에 실패했습니다. 잠시 후 다시 시도해주세요.");

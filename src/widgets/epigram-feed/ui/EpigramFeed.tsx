@@ -14,7 +14,7 @@ import {
   useTodayEpigram,
   type Epigram,
 } from "~/entities/epigram";
-import { useAuthStore } from "~/features/auth";
+import { useMe } from "~/entities/user";
 import { EmotionSelector } from "~/features/emotion-select";
 import { ErrorBoundary, SectionErrorFallback } from "~/shared/ui";
 
@@ -133,7 +133,8 @@ export function EpigramFeed(): ReactElement {
 }
 
 function EpigramFeedInner(): ReactElement {
-  const isAuthenticated = useAuthStore((s) => s.status === "authenticated");
+  const { user } = useMe();
+  const isAuthenticated = !!user;
   const {
     data,
     isLoading,
