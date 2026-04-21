@@ -45,7 +45,14 @@ export default function RootLayout() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="login" options={{ headerShown: false }} />
         <Stack.Screen name="signup" options={{ headerShown: false }} />
-        <Stack.Screen name="epigrams/[id]" options={{ headerShown: false }} />
+        <Stack.Screen
+          name="epigrams/[id]/index"
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="epigrams/[id]/edit"
+          options={{ headerShown: false }}
+        />
       </Stack>
       <StatusBar style="auto" />
     </QueryProvider>
