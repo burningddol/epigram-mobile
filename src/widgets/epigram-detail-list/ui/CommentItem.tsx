@@ -2,10 +2,11 @@ import { MoreVertical } from "lucide-react-native";
 import { memo, useState, type ReactElement } from "react";
 import { Alert, Pressable, Text, View } from "react-native";
 
-import { WriterAvatar, type Comment } from "~/entities/comment";
+import { type Comment } from "~/entities/comment";
 import { useCommentDelete } from "~/features/comment-delete";
 import { CommentEditForm } from "~/features/comment-edit";
 import { formatRelativeTime } from "~/shared/lib/date";
+import { UserAvatar } from "~/shared/ui";
 
 interface CommentItemProps {
   comment: Comment;
@@ -19,11 +20,11 @@ function CommentItemBase({
   currentUserId,
 }: CommentItemProps): ReactElement {
   const [isEditing, setIsEditing] = useState(false);
-  const { deleteComment } = useCommentDelete(
-    comment.id,
+  const { deleteComment } = useCommentDelete({
+    commentId: comment.id,
     epigramId,
-    currentUserId,
-  );
+    userId: currentUserId,
+  });
   const isOwnComment =
     currentUserId !== undefined && comment.writer.id === currentUserId;
 
@@ -55,7 +56,10 @@ function CommentItemBase({
   return (
     <View className="flex-row gap-3 rounded-xl bg-blue-100 px-4 py-4">
       <View className="shrink-0">
-        <WriterAvatar writer={comment.writer} />
+        <UserAvatar
+          image={comment.writer.image}
+          nickname={comment.writer.nickname}
+        />
       </View>
       <View className="min-w-0 flex-1">
         <View className="flex-row items-start justify-between gap-2">

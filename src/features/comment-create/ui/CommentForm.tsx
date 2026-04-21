@@ -1,8 +1,7 @@
 import type { ReactElement } from "react";
 import { Text, TextInput, View } from "react-native";
 
-import { WriterAvatar } from "~/entities/comment";
-import { Button, PrivacyToggle } from "~/shared/ui";
+import { Button, PrivacyToggle, UserAvatar } from "~/shared/ui";
 
 import { useCommentCreate } from "../model/useCommentCreate";
 
@@ -39,7 +38,10 @@ export function CommentForm({
 
   return (
     <View className="flex-row gap-3">
-      <WriterAvatar writer={author ?? PLACEHOLDER_AUTHOR} />
+      <UserAvatar
+        image={(author ?? PLACEHOLDER_AUTHOR).image}
+        nickname={(author ?? PLACEHOLDER_AUTHOR).nickname}
+      />
 
       <View className="flex-1 gap-2 rounded-2xl border border-blue-200 bg-white p-3">
         <TextInput

@@ -14,9 +14,7 @@ export function MypageActivity({ userId }: MypageActivityProps): ReactElement {
     <View className="gap-4">
       <EmotionCalendar userId={userId} />
       <EmotionPieChart userId={userId} />
-      <View className="mt-4">
-        <TabbedSection userId={userId} />
-      </View>
+      <TabbedSection userId={userId} />
     </View>
   );
 }

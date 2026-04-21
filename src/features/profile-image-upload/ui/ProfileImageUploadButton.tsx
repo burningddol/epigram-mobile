@@ -1,12 +1,8 @@
-import { Camera, User as UserIcon } from "lucide-react-native";
+import { Camera } from "lucide-react-native";
 import { type ReactElement } from "react";
-import {
-  ActivityIndicator,
-  Image,
-  Pressable,
-  View,
-  type ImageStyle,
-} from "react-native";
+import { ActivityIndicator, Pressable, View } from "react-native";
+
+import { UserAvatar } from "~/shared/ui";
 
 import { useProfileImageUpload } from "../model/useProfileImageUpload";
 
@@ -15,36 +11,6 @@ const AVATAR_SIZE = 100;
 interface ProfileImageUploadButtonProps {
   image: string | null;
   nickname: string;
-}
-
-function AvatarContent({
-  image,
-  nickname,
-}: ProfileImageUploadButtonProps): ReactElement {
-  const baseStyle: ImageStyle = {
-    width: AVATAR_SIZE,
-    height: AVATAR_SIZE,
-    borderRadius: AVATAR_SIZE / 2,
-  };
-
-  if (image) {
-    return (
-      <Image
-        source={{ uri: image }}
-        accessibilityLabel={nickname}
-        style={baseStyle}
-      />
-    );
-  }
-
-  return (
-    <View
-      className="items-center justify-center rounded-full bg-blue-200"
-      style={{ width: AVATAR_SIZE, height: AVATAR_SIZE }}
-    >
-      <UserIcon size={44} color="#2b6cb0" />
-    </View>
-  );
 }
 
 export function ProfileImageUploadButton({
@@ -65,7 +31,7 @@ export function ProfileImageUploadButton({
       className="overflow-hidden rounded-full"
       style={{ width: AVATAR_SIZE, height: AVATAR_SIZE }}
     >
-      <AvatarContent image={image} nickname={nickname} />
+      <UserAvatar image={image} nickname={nickname} size={AVATAR_SIZE} />
 
       <View
         pointerEvents="none"

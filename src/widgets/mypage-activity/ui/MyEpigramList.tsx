@@ -1,8 +1,11 @@
-import { router } from "expo-router";
-import { useCallback, useMemo, type ReactElement } from "react";
+import { useMemo, type ReactElement } from "react";
 import { Text, View } from "react-native";
 
-import { EpigramCard, useEpigrams } from "~/entities/epigram";
+import {
+  EpigramCard,
+  navigateToEpigram,
+  useEpigrams,
+} from "~/entities/epigram";
 
 import { LoadMoreButton } from "./LoadMoreButton";
 import { MYPAGE_LIST_PAGE_SIZE } from "./constants";
@@ -22,13 +25,6 @@ export function MyEpigramList({ userId }: MyEpigramListProps): ReactElement {
     [data],
   );
 
-  const handleCardPress = useCallback((epigramId: number) => {
-    router.push({
-      pathname: "/epigrams/[id]",
-      params: { id: String(epigramId) },
-    });
-  }, []);
-
   if (epigrams.length === 0) {
     return (
       <Text className="py-10 text-center font-sans text-sm text-gray-300">
@@ -43,7 +39,7 @@ export function MyEpigramList({ userId }: MyEpigramListProps): ReactElement {
         <EpigramCard
           key={epigram.id}
           epigram={epigram}
-          onPress={handleCardPress}
+          onPress={navigateToEpigram}
         />
       ))}
       {hasNextPage && (

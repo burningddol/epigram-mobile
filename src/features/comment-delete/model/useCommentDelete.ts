@@ -6,16 +6,22 @@ import {
   deleteComment as deleteCommentApi,
 } from "~/entities/comment";
 
+interface UseCommentDeleteParams {
+  commentId: number;
+  epigramId: number;
+  userId?: number;
+}
+
 interface UseCommentDeleteReturn {
   deleteComment: () => void;
   isDeleting: boolean;
 }
 
-export function useCommentDelete(
-  commentId: number,
-  epigramId: number,
-  userId?: number,
-): UseCommentDeleteReturn {
+export function useCommentDelete({
+  commentId,
+  epigramId,
+  userId,
+}: UseCommentDeleteParams): UseCommentDeleteReturn {
   const queryClient = useQueryClient();
 
   const { mutate, isPending: isDeleting } = useMutation({

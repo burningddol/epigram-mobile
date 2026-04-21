@@ -23,3 +23,5 @@ export { useSearchEpigrams } from "./api/useSearchEpigrams";
 export { useTodayEpigram } from "./api/useTodayEpigram";
 
 export { EpigramCard } from "./ui/EpigramCard";
+
+export { navigateToEpigram } from "./lib/navigation";
