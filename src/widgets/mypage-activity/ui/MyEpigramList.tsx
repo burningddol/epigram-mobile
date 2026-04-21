@@ -1,5 +1,5 @@
 import { router } from "expo-router";
-import { useCallback, type ReactElement } from "react";
+import { useCallback, useMemo, type ReactElement } from "react";
 import { Text, View } from "react-native";
 
 import { EpigramCard, useEpigrams } from "~/entities/epigram";
@@ -17,7 +17,10 @@ export function MyEpigramList({ userId }: MyEpigramListProps): ReactElement {
     writerId: userId,
   });
 
-  const epigrams = data?.pages.flatMap((page) => page.list) ?? [];
+  const epigrams = useMemo(
+    () => data?.pages.flatMap((page) => page.list) ?? [],
+    [data],
+  );
 
   const handleCardPress = useCallback((epigramId: number) => {
     router.push({
