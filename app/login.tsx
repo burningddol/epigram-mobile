@@ -1,3 +1,12 @@
-import { LoginScreen } from '~/views/login';
+import type { ReactElement } from "react";
 
-export default LoginScreen;
+import { AuthGate } from "~/features/auth";
+import { LoginScreen } from "~/views/login";
+
+export default function LoginRoute(): ReactElement {
+  return (
+    <AuthGate mode="auth-only">
+      <LoginScreen />
+    </AuthGate>
+  );
+}

@@ -2,7 +2,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { router } from "expo-router";
 import { Alert } from "react-native";
 
-import { logout } from "~/entities/user";
+import { useAuthStore } from "./authStore";
 
 interface UseLogoutReturn {
   handleLogout: () => void;
@@ -12,7 +12,7 @@ export function useLogout(): UseLogoutReturn {
   const queryClient = useQueryClient();
 
   async function performLogout(): Promise<void> {
-    await logout();
+    await useAuthStore.getState().setUnauthenticated();
     queryClient.clear();
     router.replace("/login");
   }

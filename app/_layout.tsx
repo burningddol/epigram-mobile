@@ -11,7 +11,7 @@ import { StatusBar } from "expo-status-bar";
 import { useEffect } from "react";
 import "react-native-reanimated";
 
-import { useSessionExpiryRedirect } from "~/features/auth";
+import { useAuthStore, useSessionExpiryRedirect } from "~/features/auth";
 import { QueryProvider } from "~/shared/api/QueryProvider";
 
 SplashScreen.preventAutoHideAsync();
@@ -28,6 +28,10 @@ export default function RootLayout() {
   });
 
   useSessionExpiryRedirect();
+
+  useEffect(() => {
+    void useAuthStore.getState().initialize();
+  }, []);
 
   useEffect(() => {
     if (fontsLoaded || fontsError) {

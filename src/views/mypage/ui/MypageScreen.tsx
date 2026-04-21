@@ -1,4 +1,3 @@
-import { Redirect } from "expo-router";
 import { LogOut } from "lucide-react-native";
 import { type ReactElement } from "react";
 import { Pressable, ScrollView, Text, View } from "react-native";
@@ -33,8 +32,7 @@ export function MypageScreen(): ReactElement | null {
   const { user, isLoading } = useMe();
   const { handleLogout } = useLogout();
 
-  if (isLoading) return <LoadingState />;
-  if (!user) return <Redirect href="/login" />;
+  if (isLoading || !user) return <LoadingState />;
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>

@@ -9,6 +9,7 @@ import { View } from "react-native";
 import { signUp, userKeys } from "~/entities/user";
 import { Button, Input } from "~/shared/ui";
 
+import { useAuthStore } from "../model/authStore";
 import { signUpSchema, type SignUpFormValues } from "../model/signUpSchema";
 
 const DEFAULT_VALUES: SignUpFormValues = {
@@ -35,6 +36,7 @@ export function SignUpForm(): ReactElement {
     try {
       const { user } = await signUp(data);
       queryClient.setQueryData(userKeys.me(), user);
+      useAuthStore.getState().setAuthenticated();
       router.replace("/feeds");
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 500) {
