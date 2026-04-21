@@ -6,6 +6,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useMe } from "~/entities/user";
 import { useLogout } from "~/features/auth";
+import { EmotionSelector } from "~/features/emotion-select";
 import { LoadingState } from "~/shared/ui";
 
 const AVATAR_SIZE = 100;
@@ -77,6 +78,9 @@ export function MypageScreen(): ReactElement | null {
             {user.nickname}
           </Text>
           <LogoutButton onPress={handleLogout} />
+        </View>
+        <View className="mt-8">
+          <EmotionSelector />
         </View>
       </ScrollView>
     </SafeAreaView>
