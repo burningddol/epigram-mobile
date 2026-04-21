@@ -28,7 +28,6 @@ export function ProfileImageUploadButton({
       onPress={() => {
         void pickAndUpload();
       }}
-      className="overflow-hidden rounded-full"
       style={{ width: AVATAR_SIZE, height: AVATAR_SIZE }}
     >
       <UserAvatar image={image} nickname={nickname} size={AVATAR_SIZE} />
