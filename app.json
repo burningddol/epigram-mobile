@@ -43,6 +43,19 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
+    },
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "7c9f7aa6-075b-44b2-bc1b-f93e44a47414"
+      }
+    },
+    "owner": "burningddol",
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/7c9f7aa6-075b-44b2-bc1b-f93e44a47414"
     }
   }
 }
