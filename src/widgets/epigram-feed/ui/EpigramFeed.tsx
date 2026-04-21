@@ -15,6 +15,7 @@ import {
 } from "~/entities/epigram";
 import { useAuthStore } from "~/features/auth";
 import { EmotionSelector } from "~/features/emotion-select";
+import { ErrorBoundary, SectionErrorFallback } from "~/shared/ui";
 
 const FEED_PAGE_SIZE = 10;
 
@@ -69,6 +70,16 @@ function FooterLoader({ visible }: { visible: boolean }): ReactElement | null {
 }
 
 export function EpigramFeed(): ReactElement {
+  return (
+    <ErrorBoundary
+      fallback={(_, reset) => <SectionErrorFallback reset={reset} />}
+    >
+      <EpigramFeedInner />
+    </ErrorBoundary>
+  );
+}
+
+function EpigramFeedInner(): ReactElement {
   const isAuthenticated = useAuthStore((s) => s.status === "authenticated");
   const {
     data,
