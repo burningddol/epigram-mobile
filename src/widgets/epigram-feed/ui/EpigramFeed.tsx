@@ -11,6 +11,7 @@ import {
   EpigramCard,
   navigateToEpigram,
   useEpigrams,
+  useTodayEpigram,
   type Epigram,
 } from "~/entities/epigram";
 import { useAuthStore } from "~/features/auth";
@@ -23,10 +24,62 @@ function ItemSeparator(): ReactElement {
   return <View className="h-6" />;
 }
 
-function ListHeader(): ReactElement {
+function SectionHeading({ label }: { label: string }): ReactElement {
   return (
-    <View className="mb-6">
-      <EmotionSelector />
+    <Text className="mb-4 font-serif text-xl font-bold text-black-700">
+      {label}
+    </Text>
+  );
+}
+
+function TodayEpigramLoading(): ReactElement {
+  return <View className="h-32 rounded-2xl bg-blue-200" />;
+}
+
+function TodayEpigramEmpty(): ReactElement {
+  return (
+    <View className="items-center gap-2 rounded-2xl border border-line-200 bg-surface px-6 py-8">
+      <Text className="font-serif text-base text-black-400">
+        오늘의 에피그램이 아직 작성되지 않았습니다
+      </Text>
+      <Text className="font-serif text-xs text-blue-400">
+        — 좋은 글귀가 곧 채워질 거예요
+      </Text>
+    </View>
+  );
+}
+
+function TodayEpigramBody(): ReactElement {
+  const { data: todayEpigram, isLoading } = useTodayEpigram();
+
+  if (isLoading) return <TodayEpigramLoading />;
+  if (!todayEpigram) return <TodayEpigramEmpty />;
+  return <EpigramCard epigram={todayEpigram} onPress={navigateToEpigram} />;
+}
+
+function TodayEpigramSection(): ReactElement {
+  return (
+    <View>
+      <SectionHeading label="오늘의 에피그램" />
+      <TodayEpigramBody />
+    </View>
+  );
+}
+
+function ListHeader({
+  showEmotionSelector,
+}: {
+  showEmotionSelector: boolean;
+}): ReactElement {
+  return (
+    <View className="mb-6 gap-10">
+      {showEmotionSelector && <EmotionSelector />}
+      <ErrorBoundary
+        fallback={(_, reset) => <SectionErrorFallback reset={reset} />}
+      >
+        <TodayEpigramSection />
+      </ErrorBoundary>
+      <SectionHeading label="최신 에피그램" />
     </View>
   );
 }
@@ -113,7 +166,7 @@ function EpigramFeedInner(): ReactElement {
       keyExtractor={(item) => String(item.id)}
       renderItem={renderItem}
       ItemSeparatorComponent={ItemSeparator}
-      ListHeaderComponent={isAuthenticated ? ListHeader : null}
+      ListHeaderComponent={<ListHeader showEmotionSelector={isAuthenticated} />}
       ListEmptyComponent={EmptyState}
       ListFooterComponent={<FooterLoader visible={isFetchingNextPage} />}
       onEndReached={handleEndReached}
