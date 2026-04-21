@@ -1,10 +1,8 @@
-import { Redirect, router } from "expo-router";
-import { ArrowLeft } from "lucide-react-native";
+import { Redirect } from "expo-router";
 import { type ReactElement } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   ScrollView,
   Text,
   View,
@@ -18,6 +16,7 @@ import {
   type EpigramCreateFormValues,
 } from "~/features/epigram-create";
 import { EpigramForm } from "~/widgets/epigram-form";
+import { HeaderBackButton } from "~/widgets/header";
 
 const WRITING_TIPS = [
   "500자 이내의 짧고 인상적인 문장을 담아보세요.",
@@ -33,29 +32,6 @@ const DEFAULT_VALUES: EpigramCreateFormValues = {
   referenceUrl: "",
   tags: [],
 };
-
-function HeaderBar(): ReactElement {
-  function handleBack(): void {
-    if (router.canGoBack()) {
-      router.back();
-      return;
-    }
-    router.replace("/feeds");
-  }
-
-  return (
-    <View className="flex-row items-center px-screen-x py-2">
-      <Pressable
-        onPress={handleBack}
-        accessibilityRole="button"
-        accessibilityLabel="뒤로 가기"
-        className="h-10 w-10 items-center justify-center rounded-full active:bg-blue-200"
-      >
-        <ArrowLeft size={22} color="#454545" />
-      </Pressable>
-    </View>
-  );
-}
 
 function WritingTips(): ReactElement {
   return (
@@ -89,7 +65,9 @@ export function AddEpigramScreen(): ReactElement | null {
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
-      <HeaderBar />
+      <View className="flex-row items-center px-screen-x py-2">
+        <HeaderBackButton />
+      </View>
       <KeyboardAvoidingView
         className="flex-1"
         behavior={Platform.OS === "ios" ? "padding" : undefined}

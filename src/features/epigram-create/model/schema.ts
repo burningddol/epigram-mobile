@@ -8,6 +8,8 @@ export const AUTHOR_TYPE = {
 
 export type AuthorType = (typeof AUTHOR_TYPE)[keyof typeof AUTHOR_TYPE];
 
+export const UNKNOWN_AUTHOR = "알 수 없음";
+
 export const epigramCreateFormSchema = z
   .object({
     content: z
