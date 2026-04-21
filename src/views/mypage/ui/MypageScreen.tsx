@@ -8,6 +8,7 @@ import { useMe } from "~/entities/user";
 import { useLogout } from "~/features/auth";
 import { EmotionSelector } from "~/features/emotion-select";
 import { LoadingState } from "~/shared/ui";
+import { MypageActivity } from "~/widgets/mypage-activity";
 
 const AVATAR_SIZE = 100;
 
@@ -81,6 +82,9 @@ export function MypageScreen(): ReactElement | null {
         </View>
         <View className="mt-8">
           <EmotionSelector />
+        </View>
+        <View className="mt-4">
+          <MypageActivity userId={user.id} />
         </View>
       </ScrollView>
     </SafeAreaView>
