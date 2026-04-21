@@ -11,5 +11,3 @@ export type { CreateCommentBody, UpdateCommentBody } from "./api/mutations";
 export { useEpigramComments } from "./api/useEpigramComments";
 export { useMyComments } from "./api/useMyComments";
 export { useRecentComments } from "./api/useRecentComments";
-
-export { WriterAvatar } from "./ui/WriterAvatar";

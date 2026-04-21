@@ -7,6 +7,7 @@ import {
   useMonthlyEmotions,
   type Emotion,
 } from "~/entities/emotion-log";
+import { padZero, toDateKey } from "~/shared/lib/date";
 
 const WEEKDAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
 
@@ -14,10 +15,6 @@ interface CalendarCell {
   day: number;
   isCurrentMonth: boolean;
   dateKey: string;
-}
-
-function padZero(n: number): string {
-  return String(n).padStart(2, "0");
 }
 
 function buildCalendarCells(year: number, month: number): CalendarCell[] {
@@ -160,9 +157,7 @@ export function EmotionCalendar({
   const emotionByDate = useMemo(() => {
     const map = new Map<string, Emotion>();
     for (const log of emotionLogs) {
-      const d = new Date(log.createdAt);
-      const key = `${d.getFullYear()}-${padZero(d.getMonth() + 1)}-${padZero(d.getDate())}`;
-      map.set(key, log.emotion);
+      map.set(toDateKey(new Date(log.createdAt)), log.emotion);
     }
     return map;
   }, [emotionLogs]);

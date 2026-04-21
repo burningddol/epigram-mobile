@@ -1,4 +1,3 @@
-import { router } from "expo-router";
 import { useCallback, type ReactElement } from "react";
 import {
   ActivityIndicator,
@@ -8,7 +7,12 @@ import {
   type ListRenderItem,
 } from "react-native";
 
-import { EpigramCard, useEpigrams, type Epigram } from "~/entities/epigram";
+import {
+  EpigramCard,
+  navigateToEpigram,
+  useEpigrams,
+  type Epigram,
+} from "~/entities/epigram";
 
 const FEED_PAGE_SIZE = 10;
 
@@ -68,16 +72,9 @@ export function EpigramFeed(): ReactElement {
 
   const epigrams = data?.pages.flatMap((page) => page.list) ?? [];
 
-  const handleCardPress = useCallback((epigramId: number) => {
-    router.push({
-      pathname: "/epigrams/[id]",
-      params: { id: String(epigramId) },
-    });
-  }, []);
-
   const renderItem = useCallback<ListRenderItem<Epigram>>(
-    ({ item }) => <EpigramCard epigram={item} onPress={handleCardPress} />,
-    [handleCardPress],
+    ({ item }) => <EpigramCard epigram={item} onPress={navigateToEpigram} />,
+    [],
   );
 
   function handleEndReached(): void {

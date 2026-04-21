@@ -1,3 +1,11 @@
+export function padZero(n: number): string {
+  return String(n).padStart(2, "0");
+}
+
+export function toDateKey(date: Date): string {
+  return `${date.getFullYear()}-${padZero(date.getMonth() + 1)}-${padZero(date.getDate())}`;
+}
+
 export function formatRelativeTime(dateString: string): string {
   const now = new Date();
   const date = new Date(dateString);

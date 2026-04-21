@@ -1,10 +1,11 @@
-import { router } from "expo-router";
 import { type ReactElement } from "react";
 import { Alert, Pressable, Text, View } from "react-native";
 
-import { WriterAvatar, type Comment } from "~/entities/comment";
+import { type Comment } from "~/entities/comment";
+import { navigateToEpigram } from "~/entities/epigram";
 import { useCommentDelete } from "~/features/comment-delete";
 import { formatRelativeTime } from "~/shared/lib/date";
+import { UserAvatar } from "~/shared/ui";
 
 interface MyCommentItemProps {
   comment: Comment;
@@ -16,11 +17,11 @@ export function MyCommentItem({
   userId,
 }: MyCommentItemProps): ReactElement {
   const epigramId = comment.epigramId;
-  const { deleteComment, isDeleting } = useCommentDelete(
-    comment.id,
+  const { deleteComment, isDeleting } = useCommentDelete({
+    commentId: comment.id,
     epigramId,
     userId,
-  );
+  });
 
   function handleDeletePress(): void {
     Alert.alert("댓글 삭제", "정말 삭제하시겠습니까?", [
@@ -34,16 +35,17 @@ export function MyCommentItem({
   }
 
   function handleCardPress(): void {
-    router.push({
-      pathname: "/epigrams/[id]",
-      params: { id: String(epigramId) },
-    });
+    navigateToEpigram(epigramId);
   }
 
   return (
     <View className="gap-3 border-t border-line-200 bg-background px-4 py-5 first:border-t-0">
       <View className="flex-row items-start gap-3">
-        <WriterAvatar writer={comment.writer} size={40} />
+        <UserAvatar
+          image={comment.writer.image}
+          nickname={comment.writer.nickname}
+          size={40}
+        />
 
         <View className="flex-1">
           <View className="flex-row items-center justify-between">

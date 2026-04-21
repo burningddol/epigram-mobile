@@ -2,20 +2,22 @@ import { User } from "lucide-react-native";
 import type { ReactElement } from "react";
 import { Image, View } from "react-native";
 
-interface WriterAvatarProps {
-  writer: { image: string | null; nickname: string };
+interface UserAvatarProps {
+  image: string | null;
+  nickname: string;
   size?: number;
 }
 
-export function WriterAvatar({
-  writer,
+export function UserAvatar({
+  image,
+  nickname,
   size = 36,
-}: WriterAvatarProps): ReactElement {
-  if (writer.image) {
+}: UserAvatarProps): ReactElement {
+  if (image) {
     return (
       <Image
-        source={{ uri: writer.image }}
-        accessibilityLabel={writer.nickname}
+        source={{ uri: image }}
+        accessibilityLabel={nickname}
         style={{ width: size, height: size, borderRadius: size / 2 }}
       />
     );
