@@ -14,7 +14,7 @@ export function useLogout(): UseLogoutReturn {
   async function performLogout(): Promise<void> {
     await useAuthStore.getState().setUnauthenticated();
     queryClient.clear();
-    router.replace("/login");
+    router.replace("/feeds");
   }
 
   function handleLogout(): void {

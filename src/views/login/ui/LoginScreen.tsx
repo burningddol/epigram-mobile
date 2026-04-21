@@ -11,6 +11,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { GuestLoginButton, LoginForm } from "~/features/auth";
+import { HeaderBackButton } from "~/widgets/header";
 
 export function LoginScreen(): ReactElement {
   function handleGoToSignUp(): void {
@@ -18,7 +19,10 @@ export function LoginScreen(): ReactElement {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background">
+    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+      <View className="flex-row items-center px-screen-x py-2">
+        <HeaderBackButton />
+      </View>
       <KeyboardAvoidingView
         className="flex-1"
         behavior={Platform.OS === "ios" ? "padding" : undefined}
