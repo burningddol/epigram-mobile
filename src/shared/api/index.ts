@@ -6,3 +6,5 @@ export {
   setRefreshToken,
   clearTokens,
 } from "./tokenStorage";
+export { uploadImage, toUploadImageFile } from "./uploadImage";
+export type { UploadImageFile } from "./uploadImage";
