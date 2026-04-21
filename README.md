@@ -26,11 +26,9 @@
 1. App Store · Play Store 에서 **Expo Go** 설치
 2. 아래 QR을 Expo Go 로 스캔 (또는 모바일에서 링크 탭)
 
-[![Open in Expo Go](https://img.shields.io/badge/Open_in-Expo_Go-000020?style=for-the-badge&logo=expo&logoColor=white)](https://qr.expo.dev/eas-update?slug=exp&projectId=7c9f7aa6-075b-44b2-bc1b-f93e44a47414&channel=preview)
+<img width="200" height="200" alt="image" src="https://github.com/user-attachments/assets/cc0c71fa-0d9e-4fa1-b3ab-68d75284a38a" />
 
-> 딥링크: `exp://u.expo.dev/7c9f7aa6-075b-44b2-bc1b-f93e44a47414?channel-name=preview`
->
-> EAS Update 기반이라 서버·로컬 머신 없이 24/7 접속 가능합니다.
+
 
 <br />
 
