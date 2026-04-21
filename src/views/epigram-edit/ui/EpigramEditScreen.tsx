@@ -1,83 +1,23 @@
-import { Redirect, router } from "expo-router";
-import { ArrowLeft } from "lucide-react-native";
-import { useEffect, useMemo, type ReactElement } from "react";
+import { Redirect } from "expo-router";
+import { type ReactElement } from "react";
 import {
-  ActivityIndicator,
   KeyboardAvoidingView,
   Platform,
-  Pressable,
   ScrollView,
   Text,
   View,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-import { useEpigramDetail, type EpigramDetail } from "~/entities/epigram";
+import { useEpigramDetail } from "~/entities/epigram";
 import { useMe } from "~/entities/user";
-import {
-  AUTHOR_TYPE,
-  type EpigramCreateFormValues,
-} from "~/features/epigram-create";
-import { useEpigramEdit } from "~/features/epigram-edit";
+import { resolveDefaultValues, useEpigramEdit } from "~/features/epigram-edit";
+import { ErrorState, LoadingState } from "~/shared/ui";
 import { EpigramForm } from "~/widgets/epigram-form";
-
-const UNKNOWN_AUTHOR = "알 수 없음";
+import { HeaderBackButton } from "~/widgets/header";
 
 interface EpigramEditScreenProps {
   epigramId: number;
-}
-
-function resolveDefaultValues(epigram: EpigramDetail): EpigramCreateFormValues {
-  const isUnknown = epigram.author === UNKNOWN_AUTHOR;
-  return {
-    content: epigram.content,
-    authorType: isUnknown ? AUTHOR_TYPE.UNKNOWN : AUTHOR_TYPE.DIRECT,
-    authorName: isUnknown ? "" : epigram.author,
-    referenceTitle: epigram.referenceTitle ?? "",
-    referenceUrl: epigram.referenceUrl ?? "",
-    tags: epigram.tags.map((tag) => tag.name),
-  };
-}
-
-function HeaderBar(): ReactElement {
-  function handleBack(): void {
-    if (router.canGoBack()) {
-      router.back();
-      return;
-    }
-    router.replace("/feeds");
-  }
-
-  return (
-    <View className="flex-row items-center px-screen-x py-2">
-      <Pressable
-        onPress={handleBack}
-        accessibilityRole="button"
-        accessibilityLabel="뒤로 가기"
-        className="h-10 w-10 items-center justify-center rounded-full active:bg-blue-200"
-      >
-        <ArrowLeft size={22} color="#454545" />
-      </Pressable>
-    </View>
-  );
-}
-
-function LoadingState(): ReactElement {
-  return (
-    <View className="flex-1 items-center justify-center">
-      <ActivityIndicator color="#6a82a9" />
-    </View>
-  );
-}
-
-function ErrorState(): ReactElement {
-  return (
-    <View className="flex-1 items-center justify-center px-screen-x">
-      <Text className="font-sans text-base text-error">
-        에피그램을 불러오지 못했습니다
-      </Text>
-    </View>
-  );
 }
 
 export function EpigramEditScreen({
@@ -100,28 +40,17 @@ export function EpigramEditScreen({
     submit,
   } = useEpigramEdit(epigramId);
 
-  const isUnauthorized =
-    !isMeLoading &&
-    user !== null &&
-    epigram !== undefined &&
-    epigram.writerId !== user.id;
-
-  useEffect(() => {
-    if (isUnauthorized) router.replace(`/epigrams/${epigramId}`);
-  }, [isUnauthorized, epigramId]);
-
-  const defaultValues = useMemo(
-    () => (epigram ? resolveDefaultValues(epigram) : null),
-    [epigram],
-  );
-
   if (isMeLoading) return null;
   if (!user) return <Redirect href="/login" />;
+  if (epigram && epigram.writerId !== user.id) {
+    return <Redirect href={`/epigrams/${epigramId}`} />;
+  }
 
   function renderBody(): ReactElement {
     if (isEpigramLoading) return <LoadingState />;
-    if (isError || !epigram || !defaultValues) return <ErrorState />;
-    if (isUnauthorized) return <LoadingState />;
+    if (isError || !epigram) {
+      return <ErrorState message="에피그램을 불러오지 못했습니다" />;
+    }
     return (
       <ScrollView
         className="flex-1"
@@ -132,7 +61,7 @@ export function EpigramEditScreen({
           에피그램 수정
         </Text>
         <EpigramForm
-          defaultValues={defaultValues}
+          defaultValues={resolveDefaultValues(epigram)}
           onSubmit={submit}
           isSubmitting={isSubmitting}
           hasError={hasError}
@@ -150,7 +79,9 @@ export function EpigramEditScreen({
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
-      <HeaderBar />
+      <View className="flex-row items-center px-screen-x py-2">
+        <HeaderBackButton />
+      </View>
       <KeyboardAvoidingView
         className="flex-1"
         behavior={Platform.OS === "ios" ? "padding" : undefined}

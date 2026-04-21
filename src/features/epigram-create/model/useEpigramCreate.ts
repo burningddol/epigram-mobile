@@ -4,7 +4,11 @@ import { router } from "expo-router";
 import { createEpigram, epigramKeys } from "~/entities/epigram";
 import { useTagInput } from "~/shared/hooks/useTagInput";
 
-import { AUTHOR_TYPE, type EpigramCreateFormValues } from "./schema";
+import {
+  AUTHOR_TYPE,
+  UNKNOWN_AUTHOR,
+  type EpigramCreateFormValues,
+} from "./schema";
 
 interface UseEpigramCreateReturn {
   tagInput: string;
@@ -27,7 +31,7 @@ function resolveAuthor(
   values: EpigramCreateFormValues,
   userNickname: string | undefined,
 ): string {
-  if (values.authorType === AUTHOR_TYPE.UNKNOWN) return "알 수 없음";
+  if (values.authorType === AUTHOR_TYPE.UNKNOWN) return UNKNOWN_AUTHOR;
   if (values.authorType === AUTHOR_TYPE.SELF) return userNickname ?? "본인";
   return values.authorName ?? "";
 }
