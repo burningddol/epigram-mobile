@@ -13,6 +13,7 @@ import {
   useEpigrams,
   type Epigram,
 } from "~/entities/epigram";
+import { useAuthStore } from "~/features/auth";
 import { EmotionSelector } from "~/features/emotion-select";
 
 const FEED_PAGE_SIZE = 10;
@@ -68,6 +69,7 @@ function FooterLoader({ visible }: { visible: boolean }): ReactElement | null {
 }
 
 export function EpigramFeed(): ReactElement {
+  const isAuthenticated = useAuthStore((s) => s.status === "authenticated");
   const {
     data,
     isLoading,
@@ -100,7 +102,7 @@ export function EpigramFeed(): ReactElement {
       keyExtractor={(item) => String(item.id)}
       renderItem={renderItem}
       ItemSeparatorComponent={ItemSeparator}
-      ListHeaderComponent={ListHeader}
+      ListHeaderComponent={isAuthenticated ? ListHeader : null}
       ListEmptyComponent={EmptyState}
       ListFooterComponent={<FooterLoader visible={isFetchingNextPage} />}
       onEndReached={handleEndReached}
