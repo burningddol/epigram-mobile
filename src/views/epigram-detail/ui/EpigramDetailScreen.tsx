@@ -1,5 +1,5 @@
 import { Redirect, router } from "expo-router";
-import { ArrowLeft } from "lucide-react-native";
+import { ArrowLeft, Pencil } from "lucide-react-native";
 import { type ReactElement } from "react";
 import {
   ActivityIndicator,
@@ -41,6 +41,27 @@ function BackButton(): ReactElement {
   );
 }
 
+interface EditButtonProps {
+  epigramId: number;
+}
+
+function EditButton({ epigramId }: EditButtonProps): ReactElement {
+  function handleEdit(): void {
+    router.push(`/epigrams/${epigramId}/edit`);
+  }
+
+  return (
+    <Pressable
+      onPress={handleEdit}
+      accessibilityRole="button"
+      accessibilityLabel="에피그램 수정"
+      className="h-10 w-10 items-center justify-center rounded-full active:bg-blue-200"
+    >
+      <Pencil size={20} color="#454545" />
+    </Pressable>
+  );
+}
+
 function LoadingState(): ReactElement {
   return (
     <View className="flex-1 items-center justify-center">
@@ -72,6 +93,8 @@ export function EpigramDetailScreen({
   if (isMeLoading) return null;
   if (!user) return <Redirect href="/login" />;
 
+  const isOwner = epigram !== undefined && epigram.writerId === user.id;
+
   function renderBody(): ReactElement {
     if (isEpigramLoading) return <LoadingState />;
     if (isError || !epigram) return <ErrorState />;
@@ -85,8 +108,13 @@ export function EpigramDetailScreen({
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
-      <View className="flex-row items-center px-screen-x py-2">
+      <View className="flex-row items-center justify-between px-screen-x py-2">
         <BackButton />
+        {isOwner ? (
+          <EditButton epigramId={epigramId} />
+        ) : (
+          <View className="w-10" />
+        )}
       </View>
       <KeyboardAvoidingView
         className="flex-1"
