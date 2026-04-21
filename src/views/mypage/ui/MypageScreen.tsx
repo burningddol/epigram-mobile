@@ -1,46 +1,15 @@
 import { Redirect } from "expo-router";
-import { LogOut, User as UserIcon } from "lucide-react-native";
+import { LogOut } from "lucide-react-native";
 import { type ReactElement } from "react";
-import { Image, Pressable, ScrollView, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import { useMe } from "~/entities/user";
 import { useLogout } from "~/features/auth";
 import { EmotionSelector } from "~/features/emotion-select";
+import { ProfileImageUploadButton } from "~/features/profile-image-upload";
 import { LoadingState } from "~/shared/ui";
 import { MypageActivity } from "~/widgets/mypage-activity";
-
-const AVATAR_SIZE = 100;
-
-interface ProfileAvatarProps {
-  image: string | null;
-  nickname: string;
-}
-
-function ProfileAvatar({ image, nickname }: ProfileAvatarProps): ReactElement {
-  if (image) {
-    return (
-      <Image
-        source={{ uri: image }}
-        accessibilityLabel={nickname}
-        style={{
-          width: AVATAR_SIZE,
-          height: AVATAR_SIZE,
-          borderRadius: AVATAR_SIZE / 2,
-        }}
-      />
-    );
-  }
-
-  return (
-    <View
-      className="items-center justify-center rounded-full bg-blue-200"
-      style={{ width: AVATAR_SIZE, height: AVATAR_SIZE }}
-    >
-      <UserIcon size={44} color="#2b6cb0" />
-    </View>
-  );
-}
 
 interface LogoutButtonProps {
   onPress: () => void;
@@ -74,7 +43,10 @@ export function MypageScreen(): ReactElement | null {
         showsVerticalScrollIndicator={false}
       >
         <View className="items-center gap-3">
-          <ProfileAvatar image={user.image} nickname={user.nickname} />
+          <ProfileImageUploadButton
+            image={user.image}
+            nickname={user.nickname}
+          />
           <Text className="font-sans text-xl font-bold text-black-800">
             {user.nickname}
           </Text>
