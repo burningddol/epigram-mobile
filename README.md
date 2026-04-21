@@ -13,7 +13,7 @@
 
 **📖 짧은 글귀로 하루를 채우는 문학적인 모바일 커뮤니티, Epigram**
 
-‘Epigram Mobile’은 웹 버전 Epigram의 디자인 시스템과 API 레이어를 그대로 계승한 iOS · Android 네이티브 앱입니다.
+‘Epigram Mobile’은 [Next.js 기반 웹 버전 Epigram](https://github.com/burningddol/epigram)의 디자인 시스템과 API 레이어를 그대로 계승한 iOS · Android 네이티브 앱입니다.
 
 <br />
 
