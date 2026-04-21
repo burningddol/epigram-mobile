@@ -38,6 +38,9 @@ interface TabbedSectionProps {
 
 export function TabbedSection({ userId }: TabbedSectionProps): ReactElement {
   const [activeTab, setActiveTab] = useState<ActiveTab>("epigrams");
+  const [visitedTabs, setVisitedTabs] = useState<ReadonlySet<ActiveTab>>(
+    () => new Set(["epigrams"]),
+  );
 
   const { data: epigramsData } = useEpigrams({
     limit: MYPAGE_LIST_PAGE_SIZE,
@@ -50,27 +53,37 @@ export function TabbedSection({ userId }: TabbedSectionProps): ReactElement {
   const epigramCount = epigramsData?.pages[0]?.totalCount ?? 0;
   const commentCount = commentsData?.pages[0]?.totalCount ?? 0;
 
+  function handleSelectTab(tab: ActiveTab): void {
+    setActiveTab(tab);
+    if (visitedTabs.has(tab)) return;
+    setVisitedTabs((prev) => new Set(prev).add(tab));
+  }
+
   return (
     <View className="gap-5">
       <View className="flex-row items-center gap-5">
         <TabButton
           label={`내 에피그램(${epigramCount})`}
           isActive={activeTab === "epigrams"}
-          onPress={() => setActiveTab("epigrams")}
+          onPress={() => handleSelectTab("epigrams")}
         />
         <TabButton
           label={`내 댓글(${commentCount})`}
           isActive={activeTab === "comments"}
-          onPress={() => setActiveTab("comments")}
+          onPress={() => handleSelectTab("comments")}
         />
       </View>
 
-      <View style={{ display: activeTab === "epigrams" ? "flex" : "none" }}>
-        <MyEpigramList userId={userId} />
-      </View>
-      <View style={{ display: activeTab === "comments" ? "flex" : "none" }}>
-        <MyCommentList userId={userId} />
-      </View>
+      {visitedTabs.has("epigrams") && (
+        <View style={{ display: activeTab === "epigrams" ? "flex" : "none" }}>
+          <MyEpigramList userId={userId} />
+        </View>
+      )}
+      {visitedTabs.has("comments") && (
+        <View style={{ display: activeTab === "comments" ? "flex" : "none" }}>
+          <MyCommentList userId={userId} />
+        </View>
+      )}
     </View>
   );
 }

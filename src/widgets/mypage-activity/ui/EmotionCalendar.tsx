@@ -9,10 +9,6 @@ import {
 } from "~/entities/emotion-log";
 
 const WEEKDAY_LABELS = ["일", "월", "화", "수", "목", "금", "토"];
-const TODAY = new Date();
-const TODAY_YEAR = TODAY.getFullYear();
-const TODAY_MONTH = TODAY.getMonth() + 1;
-const TODAY_DATE = TODAY.getDate();
 
 interface CalendarCell {
   day: number;
@@ -147,8 +143,13 @@ interface EmotionCalendarProps {
 export function EmotionCalendar({
   userId,
 }: EmotionCalendarProps): ReactElement {
-  const [year, setYear] = useState(TODAY_YEAR);
-  const [month, setMonth] = useState(TODAY_MONTH);
+  const today = new Date();
+  const todayYear = today.getFullYear();
+  const todayMonth = today.getMonth() + 1;
+  const todayDate = today.getDate();
+
+  const [year, setYear] = useState(todayYear);
+  const [month, setMonth] = useState(todayMonth);
 
   const { data: emotionLogs = [] } = useMonthlyEmotions({
     userId,
@@ -189,9 +190,9 @@ export function EmotionCalendar({
   function isCellToday(cell: CalendarCell): boolean {
     return (
       cell.isCurrentMonth &&
-      year === TODAY_YEAR &&
-      month === TODAY_MONTH &&
-      cell.day === TODAY_DATE
+      year === todayYear &&
+      month === todayMonth &&
+      cell.day === todayDate
     );
   }
 

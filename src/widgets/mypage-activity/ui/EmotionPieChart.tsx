@@ -5,6 +5,7 @@ import Svg, { Circle, G } from "react-native-svg";
 import {
   EMOTION_META,
   EMOTION_ORDER,
+  useMonthlyEmotions,
   type Emotion,
   type EmotionLog,
 } from "~/entities/emotion-log";
@@ -102,12 +103,19 @@ function LegendRow({ datum }: LegendRowProps): ReactElement {
 }
 
 interface EmotionPieChartProps {
-  emotionLogs: EmotionLog[];
+  userId: number;
 }
 
 export function EmotionPieChart({
-  emotionLogs,
+  userId,
 }: EmotionPieChartProps): ReactElement {
+  const now = new Date();
+  const { data: emotionLogs = [] } = useMonthlyEmotions({
+    userId,
+    year: now.getFullYear(),
+    month: now.getMonth() + 1,
+  });
+
   const chartData = useMemo(() => buildChartData(emotionLogs), [emotionLogs]);
 
   if (chartData.length === 0) {

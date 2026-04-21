@@ -1,4 +1,4 @@
-import { type ReactElement } from "react";
+import { useMemo, type ReactElement } from "react";
 import { Text, View } from "react-native";
 
 import { useMyComments } from "~/entities/comment";
@@ -18,7 +18,10 @@ export function MyCommentList({ userId }: MyCommentListProps): ReactElement {
       limit: MYPAGE_LIST_PAGE_SIZE,
     });
 
-  const comments = data?.pages.flatMap((page) => page.list) ?? [];
+  const comments = useMemo(
+    () => data?.pages.flatMap((page) => page.list) ?? [],
+    [data],
+  );
 
   if (comments.length === 0) {
     return (
