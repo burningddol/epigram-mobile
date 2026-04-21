@@ -1,6 +1,7 @@
 import { useLocalSearchParams } from "expo-router";
 import type { ReactElement } from "react";
 
+import { AuthGate } from "~/features/auth";
 import { EpigramEditScreen } from "~/views/epigram-edit";
 
 export default function EpigramEditRoute(): ReactElement | null {
@@ -9,5 +10,9 @@ export default function EpigramEditRoute(): ReactElement | null {
 
   if (!Number.isInteger(epigramId) || epigramId <= 0) return null;
 
-  return <EpigramEditScreen epigramId={epigramId} />;
+  return (
+    <AuthGate mode="protected">
+      <EpigramEditScreen epigramId={epigramId} />
+    </AuthGate>
+  );
 }

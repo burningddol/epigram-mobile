@@ -1,6 +1,6 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
-import { router } from "expo-router";
+import { router, useLocalSearchParams, type Href } from "expo-router";
 import type { ReactElement } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
@@ -8,12 +8,26 @@ import { View } from "react-native";
 import { signIn, userKeys } from "~/entities/user";
 import { Button, Input } from "~/shared/ui";
 
+import { useAuthStore } from "../model/authStore";
 import { loginSchema, type LoginFormValues } from "../model/loginSchema";
 
 const DEFAULT_VALUES: LoginFormValues = { email: "", password: "" };
+const DEFAULT_REDIRECT: Href = "/feeds";
+
+function resolveRedirectTarget(redirect: string | undefined): Href {
+  if (!redirect) return DEFAULT_REDIRECT;
+  try {
+    const decoded = decodeURIComponent(redirect);
+    if (decoded.startsWith("/")) return decoded as Href;
+    return DEFAULT_REDIRECT;
+  } catch {
+    return DEFAULT_REDIRECT;
+  }
+}
 
 export function LoginForm(): ReactElement {
   const queryClient = useQueryClient();
+  const { redirect } = useLocalSearchParams<{ redirect?: string }>();
   const {
     control,
     handleSubmit,
@@ -29,7 +43,8 @@ export function LoginForm(): ReactElement {
     try {
       const { user } = await signIn(data);
       queryClient.setQueryData(userKeys.me(), user);
-      router.replace("/feeds");
+      useAuthStore.getState().setAuthenticated();
+      router.replace(resolveRedirectTarget(redirect));
     } catch {
       const message = "이메일 혹은 비밀번호를 확인해주세요.";
       setError("email", { message });

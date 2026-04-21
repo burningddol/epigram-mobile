@@ -1,4 +1,4 @@
-import { Redirect, router } from "expo-router";
+import { router } from "expo-router";
 import { MoreVertical } from "lucide-react-native";
 import { type ReactElement } from "react";
 import {
@@ -68,8 +68,7 @@ export function EpigramDetailScreen({
     isError,
   } = useEpigramDetail(epigramId);
 
-  if (isMeLoading) return null;
-  if (!user) return <Redirect href="/login" />;
+  if (isMeLoading || !user) return <LoadingState />;
 
   const isOwner = epigram !== undefined && epigram.writerId === user.id;
 

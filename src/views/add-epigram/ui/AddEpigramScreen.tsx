@@ -1,4 +1,3 @@
-import { Redirect } from "expo-router";
 import { type ReactElement } from "react";
 import {
   KeyboardAvoidingView,
@@ -15,6 +14,7 @@ import {
   useEpigramCreate,
   type EpigramCreateFormValues,
 } from "~/features/epigram-create";
+import { LoadingState } from "~/shared/ui";
 import { EpigramForm } from "~/widgets/epigram-form";
 import { HeaderBackButton } from "~/widgets/header";
 
@@ -60,8 +60,7 @@ export function AddEpigramScreen(): ReactElement | null {
     submit,
   } = useEpigramCreate(user?.nickname);
 
-  if (isMeLoading) return null;
-  if (!user) return <Redirect href="/login" />;
+  if (isMeLoading || !user) return <LoadingState />;
 
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>

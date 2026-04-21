@@ -40,8 +40,7 @@ export function EpigramEditScreen({
     submit,
   } = useEpigramEdit(epigramId);
 
-  if (isMeLoading) return null;
-  if (!user) return <Redirect href="/login" />;
+  if (isMeLoading || !user) return <LoadingState />;
   if (epigram && epigram.writerId !== user.id) {
     return <Redirect href={`/epigrams/${epigramId}`} />;
   }

@@ -1,3 +1,12 @@
-import { SignUpScreen } from '~/views/signup';
+import type { ReactElement } from "react";
 
-export default SignUpScreen;
+import { AuthGate } from "~/features/auth";
+import { SignUpScreen } from "~/views/signup";
+
+export default function SignUpRoute(): ReactElement {
+  return (
+    <AuthGate mode="auth-only">
+      <SignUpScreen />
+    </AuthGate>
+  );
+}
