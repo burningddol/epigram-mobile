@@ -13,11 +13,20 @@ import {
   useEpigrams,
   type Epigram,
 } from "~/entities/epigram";
+import { EmotionSelector } from "~/features/emotion-select";
 
 const FEED_PAGE_SIZE = 10;
 
 function ItemSeparator(): ReactElement {
   return <View className="h-6" />;
+}
+
+function ListHeader(): ReactElement {
+  return (
+    <View className="mb-6">
+      <EmotionSelector />
+    </View>
+  );
 }
 
 function LoadingState(): ReactElement {
@@ -91,6 +100,7 @@ export function EpigramFeed(): ReactElement {
       keyExtractor={(item) => String(item.id)}
       renderItem={renderItem}
       ItemSeparatorComponent={ItemSeparator}
+      ListHeaderComponent={ListHeader}
       ListEmptyComponent={EmptyState}
       ListFooterComponent={<FooterLoader visible={isFetchingNextPage} />}
       onEndReached={handleEndReached}
