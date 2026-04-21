@@ -3,6 +3,11 @@ import { useState } from "react";
 
 import { commentKeys, createComment } from "~/entities/comment";
 
+interface UseCommentCreateParams {
+  epigramId: number;
+  userId?: number;
+}
+
 interface UseCommentCreateReturn {
   content: string;
   isPrivate: boolean;
@@ -14,7 +19,10 @@ interface UseCommentCreateReturn {
   handleSubmit: () => void;
 }
 
-export function useCommentCreate(epigramId: number): UseCommentCreateReturn {
+export function useCommentCreate({
+  epigramId,
+  userId,
+}: UseCommentCreateParams): UseCommentCreateReturn {
   const queryClient = useQueryClient();
   const [content, setContent] = useState("");
   const [isPrivate, setIsPrivate] = useState(false);
@@ -30,6 +38,11 @@ export function useCommentCreate(epigramId: number): UseCommentCreateReturn {
       queryClient.invalidateQueries({
         queryKey: commentKeys.byEpigram(epigramId),
       });
+      if (userId !== undefined) {
+        queryClient.invalidateQueries({
+          queryKey: commentKeys.byUser(userId),
+        });
+      }
       setContent("");
       setIsPrivate(false);
     },

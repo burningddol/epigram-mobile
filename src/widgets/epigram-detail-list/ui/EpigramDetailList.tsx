@@ -21,6 +21,7 @@ interface SectionHeaderProps {
   totalCount: number | undefined;
   epigramId: number;
   author: { nickname: string; image: string | null } | null;
+  userId: number | undefined;
 }
 
 function ItemSeparator(): ReactElement {
@@ -57,6 +58,7 @@ function SectionHeader({
   totalCount,
   epigramId,
   author,
+  userId,
 }: SectionHeaderProps): ReactElement {
   return (
     <View className="gap-4 pt-2">
@@ -68,7 +70,7 @@ function SectionHeader({
           </Text>
         )}
       </View>
-      <CommentForm epigramId={epigramId} author={author} />
+      <CommentForm epigramId={epigramId} author={author} userId={userId} />
     </View>
   );
 }
@@ -115,10 +117,11 @@ export function EpigramDetailList({
           totalCount={totalCount}
           epigramId={epigramId}
           author={author}
+          userId={currentUserId}
         />
       </View>
     ),
-    [listHeader, totalCount, epigramId, author],
+    [listHeader, totalCount, epigramId, author, currentUserId],
   );
 
   const renderEmpty = useCallback((): ReactElement => {
