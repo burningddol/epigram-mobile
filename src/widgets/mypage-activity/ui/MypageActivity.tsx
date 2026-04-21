@@ -5,6 +5,7 @@ import { useMonthlyEmotions } from "~/entities/emotion-log";
 
 import { EmotionCalendar } from "./EmotionCalendar";
 import { EmotionPieChart } from "./EmotionPieChart";
+import { TabbedSection } from "./TabbedSection";
 
 const NOW = new Date();
 
@@ -23,6 +24,9 @@ export function MypageActivity({ userId }: MypageActivityProps): ReactElement {
     <View className="gap-4">
       <EmotionCalendar userId={userId} />
       <EmotionPieChart emotionLogs={monthlyLogs} />
+      <View className="mt-4">
+        <TabbedSection userId={userId} />
+      </View>
     </View>
   );
 }
