@@ -1,34 +1,23 @@
 import { router } from "expo-router";
-import { useCallback, useEffect, type ReactElement } from "react";
+import { useCallback, type ReactElement } from "react";
 import { Text, View } from "react-native";
 
-import { useEpigrams } from "~/entities/epigram";
-import { EpigramCard } from "~/widgets/epigram-card";
+import { EpigramCard, useEpigrams } from "~/entities/epigram";
 
 import { LoadMoreButton } from "./LoadMoreButton";
-
-const PAGE_SIZE = 3;
+import { MYPAGE_LIST_PAGE_SIZE } from "./constants";
 
 interface MyEpigramListProps {
   userId: number;
-  onTotalCount: (count: number) => void;
 }
 
-export function MyEpigramList({
-  userId,
-  onTotalCount,
-}: MyEpigramListProps): ReactElement {
+export function MyEpigramList({ userId }: MyEpigramListProps): ReactElement {
   const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useEpigrams({
-    limit: PAGE_SIZE,
+    limit: MYPAGE_LIST_PAGE_SIZE,
     writerId: userId,
   });
 
   const epigrams = data?.pages.flatMap((page) => page.list) ?? [];
-  const totalCount = data?.pages[0]?.totalCount ?? 0;
-
-  useEffect(() => {
-    onTotalCount(totalCount);
-  }, [totalCount, onTotalCount]);
 
   const handleCardPress = useCallback((epigramId: number) => {
     router.push({

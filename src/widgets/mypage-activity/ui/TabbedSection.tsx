@@ -1,6 +1,10 @@
-import { useCallback, useState, type ReactElement } from "react";
+import { useState, type ReactElement } from "react";
 import { Pressable, Text, View } from "react-native";
 
+import { useMyComments } from "~/entities/comment";
+import { useEpigrams } from "~/entities/epigram";
+
+import { MYPAGE_LIST_PAGE_SIZE } from "./constants";
 import { MyCommentList } from "./MyCommentList";
 import { MyEpigramList } from "./MyEpigramList";
 
@@ -34,17 +38,17 @@ interface TabbedSectionProps {
 
 export function TabbedSection({ userId }: TabbedSectionProps): ReactElement {
   const [activeTab, setActiveTab] = useState<ActiveTab>("epigrams");
-  const [epigramCount, setEpigramCount] = useState(0);
-  const [commentCount, setCommentCount] = useState(0);
 
-  const handleEpigramCount = useCallback(
-    (count: number) => setEpigramCount(count),
-    [],
-  );
-  const handleCommentCount = useCallback(
-    (count: number) => setCommentCount(count),
-    [],
-  );
+  const { data: epigramsData } = useEpigrams({
+    limit: MYPAGE_LIST_PAGE_SIZE,
+    writerId: userId,
+  });
+  const { data: commentsData } = useMyComments({
+    userId,
+    limit: MYPAGE_LIST_PAGE_SIZE,
+  });
+  const epigramCount = epigramsData?.pages[0]?.totalCount ?? 0;
+  const commentCount = commentsData?.pages[0]?.totalCount ?? 0;
 
   return (
     <View className="gap-5">
@@ -62,10 +66,10 @@ export function TabbedSection({ userId }: TabbedSectionProps): ReactElement {
       </View>
 
       <View style={{ display: activeTab === "epigrams" ? "flex" : "none" }}>
-        <MyEpigramList userId={userId} onTotalCount={handleEpigramCount} />
+        <MyEpigramList userId={userId} />
       </View>
       <View style={{ display: activeTab === "comments" ? "flex" : "none" }}>
-        <MyCommentList userId={userId} onTotalCount={handleCommentCount} />
+        <MyCommentList userId={userId} />
       </View>
     </View>
   );

@@ -21,3 +21,5 @@ export { useEpigramDetail } from "./api/useEpigramDetail";
 export { useEpigrams } from "./api/useEpigrams";
 export { useSearchEpigrams } from "./api/useSearchEpigrams";
 export { useTodayEpigram } from "./api/useTodayEpigram";
+
+export { EpigramCard } from "./ui/EpigramCard";

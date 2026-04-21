@@ -2,23 +2,12 @@ import { useMemo, type ReactElement } from "react";
 import { Text, View } from "react-native";
 import Svg, { Circle, G } from "react-native-svg";
 
-import type { Emotion, EmotionLog } from "~/entities/emotion-log";
-
-interface EmotionMeta {
-  label: string;
-  emoji: string;
-  color: string;
-}
-
-const EMOTION_META: Record<Emotion, EmotionMeta> = {
-  MOVED: { label: "감동", emoji: "🥰", color: "#48bb98" },
-  HAPPY: { label: "기쁨", emoji: "😊", color: "#fbc85b" },
-  WORRIED: { label: "고민", emoji: "🤔", color: "#8e80e3" },
-  SAD: { label: "슬픔", emoji: "😢", color: "#5195ee" },
-  ANGRY: { label: "분노", emoji: "😠", color: "#e46e80" },
-};
-
-const EMOTION_ORDER: Emotion[] = ["MOVED", "HAPPY", "WORRIED", "SAD", "ANGRY"];
+import {
+  EMOTION_META,
+  EMOTION_ORDER,
+  type Emotion,
+  type EmotionLog,
+} from "~/entities/emotion-log";
 
 const CHART_SIZE = 140;
 const RADIUS = 55;
