@@ -1,3 +1,4 @@
+export { EPIGRAM_CREATE_DEFAULT_VALUES } from "./model/defaultValues";
 export {
   AUTHOR_TYPE,
   epigramCreateFormSchema,
