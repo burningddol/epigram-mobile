@@ -1,5 +1,5 @@
 import { MessageCircle } from "lucide-react-native";
-import { useCallback, useMemo, type ReactElement } from "react";
+import { useCallback, useMemo, useRef, type ReactElement } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 
 import { useEpigramComments, type Comment } from "~/entities/comment";
@@ -80,6 +80,7 @@ export function EpigramDetailList({
   listHeader,
 }: EpigramDetailListProps): ReactElement {
   const { user: me } = useMe();
+  const listRef = useRef<FlatList<Comment>>(null);
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useEpigramComments({ epigramId, limit: COMMENTS_PAGE_SIZE });
 
@@ -98,15 +99,35 @@ export function EpigramDetailList({
     if (hasNextPage && !isFetchingNextPage) fetchNextPage();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
+  const handleStartEdit = useCallback((index: number): void => {
+    listRef.current?.scrollToIndex({
+      index,
+      viewPosition: 0,
+      animated: true,
+    });
+  }, []);
+
+  const handleScrollToIndexFailed = useCallback(
+    (info: { index: number; averageItemLength: number }): void => {
+      listRef.current?.scrollToOffset({
+        offset: info.averageItemLength * info.index,
+        animated: true,
+      });
+    },
+    [],
+  );
+
   const renderItem = useCallback(
-    ({ item }: { item: Comment }) => (
+    ({ item, index }: { item: Comment; index: number }) => (
       <CommentItem
         comment={item}
         epigramId={epigramId}
         currentUserId={currentUserId}
+        index={index}
+        onStartEdit={handleStartEdit}
       />
     ),
-    [epigramId, currentUserId],
+    [epigramId, currentUserId, handleStartEdit],
   );
 
   const headerElement = useMemo(
@@ -149,6 +170,7 @@ export function EpigramDetailList({
 
   return (
     <FlatList
+      ref={listRef}
       data={comments}
       keyExtractor={(comment) => String(comment.id)}
       renderItem={renderItem}
@@ -161,6 +183,8 @@ export function EpigramDetailList({
       ItemSeparatorComponent={ItemSeparator}
       ListHeaderComponentStyle={{ marginBottom: 12 }}
       keyboardShouldPersistTaps="handled"
+      automaticallyAdjustKeyboardInsets
+      onScrollToIndexFailed={handleScrollToIndexFailed}
     />
   );
 }
