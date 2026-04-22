@@ -1,5 +1,5 @@
 import { ExternalLink } from "lucide-react-native";
-import { memo, type ReactElement } from "react";
+import { type ReactElement } from "react";
 import { Linking, Pressable, StyleSheet, Text, View } from "react-native";
 
 import type { EpigramDetail } from "~/entities/epigram";
@@ -17,8 +17,20 @@ interface ReferenceProps {
 const RULE_LINE_SPACING = 28;
 const RULE_LINE_COUNT = 24;
 const RULE_LINE_COLOR = "#f2f2f2";
+const ALLOWED_URL_SCHEMES = ["http:", "https:"] as const;
 
-const RuledLines = memo(function RuledLines(): ReactElement {
+function isOpenableUrl(raw: string): boolean {
+  try {
+    const parsed = new URL(raw);
+    return ALLOWED_URL_SCHEMES.includes(
+      parsed.protocol as (typeof ALLOWED_URL_SCHEMES)[number],
+    );
+  } catch {
+    return false;
+  }
+}
+
+function RuledLines(): ReactElement {
   return (
     <View pointerEvents="none" style={StyleSheet.absoluteFill}>
       {Array.from({ length: RULE_LINE_COUNT }).map((_, index) => (
@@ -36,15 +48,17 @@ const RuledLines = memo(function RuledLines(): ReactElement {
       ))}
     </View>
   );
-});
+}
 
 function Reference({ title, url }: ReferenceProps): ReactElement {
+  const canOpen = url !== null && isOpenableUrl(url);
+
   async function handleOpenReference(): Promise<void> {
-    if (!url) return;
+    if (!canOpen || url === null) return;
     await Linking.openURL(url);
   }
 
-  if (!url) {
+  if (!canOpen) {
     return (
       <Text className="text-right font-sans text-xs text-black-300">
         {title}

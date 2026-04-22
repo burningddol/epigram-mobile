@@ -38,9 +38,6 @@ interface TabbedSectionProps {
 
 export function TabbedSection({ userId }: TabbedSectionProps): ReactElement {
   const [activeTab, setActiveTab] = useState<ActiveTab>("epigrams");
-  const [visitedTabs, setVisitedTabs] = useState<ReadonlySet<ActiveTab>>(
-    () => new Set(["epigrams"]),
-  );
 
   const { totalCount: epigramCount = 0 } = useEpigrams({
     limit: MYPAGE_LIST_PAGE_SIZE,
@@ -51,36 +48,25 @@ export function TabbedSection({ userId }: TabbedSectionProps): ReactElement {
     limit: MYPAGE_LIST_PAGE_SIZE,
   });
 
-  function handleSelectTab(tab: ActiveTab): void {
-    setActiveTab(tab);
-    if (visitedTabs.has(tab)) return;
-    setVisitedTabs((prev) => new Set(prev).add(tab));
-  }
-
   return (
     <View className="gap-5">
       <View className="flex-row items-center gap-5">
         <TabButton
           label={`내 에피그램(${epigramCount})`}
           isActive={activeTab === "epigrams"}
-          onPress={() => handleSelectTab("epigrams")}
+          onPress={() => setActiveTab("epigrams")}
         />
         <TabButton
           label={`내 댓글(${commentCount})`}
           isActive={activeTab === "comments"}
-          onPress={() => handleSelectTab("comments")}
+          onPress={() => setActiveTab("comments")}
         />
       </View>
 
-      {visitedTabs.has("epigrams") && (
-        <View style={{ display: activeTab === "epigrams" ? "flex" : "none" }}>
-          <MyEpigramList userId={userId} />
-        </View>
-      )}
-      {visitedTabs.has("comments") && (
-        <View style={{ display: activeTab === "comments" ? "flex" : "none" }}>
-          <MyCommentList userId={userId} />
-        </View>
+      {activeTab === "epigrams" ? (
+        <MyEpigramList userId={userId} />
+      ) : (
+        <MyCommentList userId={userId} />
       )}
     </View>
   );
