@@ -1,17 +1,9 @@
 import { router } from "expo-router";
 import type { ReactElement } from "react";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  ScrollView,
-  Text,
-  View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Pressable, ScrollView, Text, View } from "react-native";
 
 import { SignUpForm } from "~/features/auth";
-import { HeaderBackButton } from "~/widgets/header";
+import { ScreenLayout } from "~/shared/ui";
 
 export function SignUpScreen(): ReactElement {
   function handleGoToLogin(): void {
@@ -19,38 +11,30 @@ export function SignUpScreen(): ReactElement {
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
-      <View className="flex-row items-center px-screen-x py-2">
-        <HeaderBackButton />
-      </View>
-      <KeyboardAvoidingView
+    <ScreenLayout>
+      <ScrollView
         className="flex-1"
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        contentContainerClassName="flex-grow justify-center px-screen-x py-10"
+        keyboardShouldPersistTaps="handled"
       >
-        <ScrollView
-          className="flex-1"
-          contentContainerClassName="flex-grow justify-center px-screen-x py-10"
-          keyboardShouldPersistTaps="handled"
-        >
-          <View className="mb-10 items-center gap-2">
-            <Text className="font-serif-bold text-4xl text-blue-800">
-              epigram
+        <View className="mb-10 items-center gap-2">
+          <Text className="font-serif-bold text-4xl text-blue-800">
+            epigram
+          </Text>
+          <Text className="font-sans text-sm text-black-300">회원가입</Text>
+        </View>
+        <SignUpForm />
+        <View className="mt-6 flex-row justify-center gap-1">
+          <Text className="font-sans text-sm text-black-300">
+            이미 회원이신가요?
+          </Text>
+          <Pressable onPress={handleGoToLogin} accessibilityRole="link">
+            <Text className="font-sans text-sm font-semibold text-blue-600">
+              로그인
             </Text>
-            <Text className="font-sans text-sm text-black-300">회원가입</Text>
-          </View>
-          <SignUpForm />
-          <View className="mt-6 flex-row justify-center gap-1">
-            <Text className="font-sans text-sm text-black-300">
-              이미 회원이신가요?
-            </Text>
-            <Pressable onPress={handleGoToLogin} accessibilityRole="link">
-              <Text className="font-sans text-sm font-semibold text-blue-600">
-                로그인
-              </Text>
-            </Pressable>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+          </Pressable>
+        </View>
+      </ScrollView>
+    </ScreenLayout>
   );
 }

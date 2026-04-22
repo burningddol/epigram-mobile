@@ -136,7 +136,7 @@ function EpigramFeedInner(): ReactElement {
   const { user } = useMe();
   const isAuthenticated = !!user;
   const {
-    data,
+    items: epigrams,
     isLoading,
     isError,
     isFetchingNextPage,
@@ -145,8 +145,6 @@ function EpigramFeedInner(): ReactElement {
   } = useEpigrams({
     limit: FEED_PAGE_SIZE,
   });
-
-  const epigrams = data?.pages.flatMap((page) => page.list) ?? [];
 
   const renderItem = useCallback<ListRenderItem<Epigram>>(
     ({ item }) => <EpigramCard epigram={item} onPress={navigateToEpigram} />,

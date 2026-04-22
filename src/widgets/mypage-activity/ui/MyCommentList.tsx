@@ -1,4 +1,4 @@
-import { useMemo, type ReactElement } from "react";
+import { type ReactElement } from "react";
 import { Text, View } from "react-native";
 
 import { useMyComments } from "~/entities/comment";
@@ -12,16 +12,15 @@ interface MyCommentListProps {
 }
 
 export function MyCommentList({ userId }: MyCommentListProps): ReactElement {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } =
-    useMyComments({
-      userId,
-      limit: MYPAGE_LIST_PAGE_SIZE,
-    });
-
-  const comments = useMemo(
-    () => data?.pages.flatMap((page) => page.list) ?? [],
-    [data],
-  );
+  const {
+    items: comments,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useMyComments({
+    userId,
+    limit: MYPAGE_LIST_PAGE_SIZE,
+  });
 
   if (comments.length === 0) {
     return (

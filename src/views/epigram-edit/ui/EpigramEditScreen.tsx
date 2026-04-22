@@ -1,20 +1,12 @@
 import { Redirect } from "expo-router";
 import { type ReactElement } from "react";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Text,
-  View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ScrollView, Text } from "react-native";
 
 import { useEpigramDetail } from "~/entities/epigram";
 import { useMe } from "~/entities/user";
 import { resolveDefaultValues, useEpigramEdit } from "~/features/epigram-edit";
-import { ErrorState, LoadingState } from "~/shared/ui";
+import { ErrorState, LoadingState, ScreenLayout } from "~/shared/ui";
 import { EpigramForm } from "~/widgets/epigram-form";
-import { HeaderBackButton } from "~/widgets/header";
 
 interface EpigramEditScreenProps {
   epigramId: number;
@@ -76,17 +68,5 @@ export function EpigramEditScreen({
     );
   }
 
-  return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
-      <View className="flex-row items-center px-screen-x py-2">
-        <HeaderBackButton />
-      </View>
-      <KeyboardAvoidingView
-        className="flex-1"
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
-        {renderBody()}
-      </KeyboardAvoidingView>
-    </SafeAreaView>
-  );
+  return <ScreenLayout>{renderBody()}</ScreenLayout>;
 }

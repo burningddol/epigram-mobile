@@ -71,13 +71,13 @@ function SearchNoResults({ keyword }: SearchNoResultsProps): ReactElement {
 }
 
 export function SearchResults({ keyword }: SearchResultsProps): ReactElement {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage, isLoading } =
-    useSearchEpigrams({ keyword, limit: SEARCH_LIMIT });
-
-  const epigrams = useMemo(
-    () => data?.pages.flatMap((page) => page.list) ?? [],
-    [data?.pages],
-  );
+  const {
+    items: epigrams,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isLoading,
+  } = useSearchEpigrams({ keyword, limit: SEARCH_LIMIT });
 
   const highlightRegex = useMemo(() => buildHighlightRegex(keyword), [keyword]);
 

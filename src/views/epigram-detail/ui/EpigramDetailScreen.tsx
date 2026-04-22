@@ -1,22 +1,14 @@
 import { router } from "expo-router";
 import { MoreVertical } from "lucide-react-native";
 import { type ReactElement } from "react";
-import {
-  Alert,
-  KeyboardAvoidingView,
-  Platform,
-  Pressable,
-  View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Alert, Pressable } from "react-native";
 
 import { useEpigramDetail } from "~/entities/epigram";
 import { useMe } from "~/entities/user";
 import { useEpigramDelete } from "~/features/epigram-delete";
-import { ErrorState, LoadingState } from "~/shared/ui";
+import { ErrorState, LoadingState, ScreenLayout } from "~/shared/ui";
 import { EpigramDetailCard } from "~/widgets/epigram-detail-card";
 import { EpigramDetailList } from "~/widgets/epigram-detail-list";
-import { HeaderBackButton } from "~/widgets/header";
 
 interface EpigramDetailScreenProps {
   epigramId: number;
@@ -86,17 +78,10 @@ export function EpigramDetailScreen({
   }
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
-      <View className="flex-row items-center justify-between px-screen-x py-2">
-        <HeaderBackButton />
-        {isOwner && <ActionMenu epigramId={epigramId} />}
-      </View>
-      <KeyboardAvoidingView
-        className="flex-1"
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
-      >
-        {renderBody()}
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+    <ScreenLayout
+      headerRight={isOwner ? <ActionMenu epigramId={epigramId} /> : undefined}
+    >
+      {renderBody()}
+    </ScreenLayout>
   );
 }
