@@ -1,10 +1,10 @@
-import { useQueryClient } from "@tanstack/react-query";
-import { router } from "expo-router";
 import { useState, type ReactElement } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
-import { signIn, userKeys } from "~/entities/user";
+import { signIn } from "~/entities/user";
 import { cn } from "~/shared/lib/cn";
+
+import { useAuthMutation } from "../model/useAuthMutation";
 
 const GUEST_CREDENTIALS = {
   email: "guest13325@naver.com",
@@ -12,7 +12,7 @@ const GUEST_CREDENTIALS = {
 } as const;
 
 export function GuestLoginButton(): ReactElement {
-  const queryClient = useQueryClient();
+  const { handleAuthSuccess } = useAuthMutation();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -20,9 +20,8 @@ export function GuestLoginButton(): ReactElement {
     setIsLoading(true);
     setError(null);
     try {
-      const { user } = await signIn(GUEST_CREDENTIALS);
-      queryClient.setQueryData(userKeys.me(), user);
-      router.replace("/feeds");
+      const result = await signIn(GUEST_CREDENTIALS);
+      handleAuthSuccess(result);
     } catch {
       setError("게스트 로그인에 실패했습니다. 잠시 후 다시 시도해주세요.");
     } finally {

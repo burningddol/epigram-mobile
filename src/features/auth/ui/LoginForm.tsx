@@ -1,13 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
-import { router, useLocalSearchParams, type Href } from "expo-router";
+import { useLocalSearchParams, type Href } from "expo-router";
 import type { ReactElement } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 
-import { signIn, userKeys } from "~/entities/user";
+import { signIn } from "~/entities/user";
 import { Button, Input } from "~/shared/ui";
 
+import { useAuthMutation } from "../model/useAuthMutation";
 import { loginSchema, type LoginFormValues } from "../model/loginSchema";
 
 const DEFAULT_VALUES: LoginFormValues = { email: "", password: "" };
@@ -25,7 +25,7 @@ function resolveRedirectTarget(redirect: string | undefined): Href {
 }
 
 export function LoginForm(): ReactElement {
-  const queryClient = useQueryClient();
+  const { handleAuthSuccess } = useAuthMutation();
   const { redirect } = useLocalSearchParams<{ redirect?: string }>();
   const {
     control,
@@ -40,9 +40,8 @@ export function LoginForm(): ReactElement {
 
   async function onSubmit(data: LoginFormValues): Promise<void> {
     try {
-      const { user } = await signIn(data);
-      queryClient.setQueryData(userKeys.me(), user);
-      router.replace(resolveRedirectTarget(redirect));
+      const result = await signIn(data);
+      handleAuthSuccess(result, resolveRedirectTarget(redirect));
     } catch {
       const message = "이메일 혹은 비밀번호를 확인해주세요.";
       setError("email", { message });

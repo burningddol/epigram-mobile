@@ -1,22 +1,28 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { router } from "expo-router";
 import { Alert } from "react-native";
 
 import { deleteEpigram, epigramKeys } from "~/entities/epigram";
+
+interface UseEpigramDeleteOptions {
+  onSuccess?: () => void;
+}
 
 interface UseEpigramDeleteReturn {
   handleDelete: () => void;
   isDeleting: boolean;
 }
 
-export function useEpigramDelete(epigramId: number): UseEpigramDeleteReturn {
+export function useEpigramDelete(
+  epigramId: number,
+  { onSuccess }: UseEpigramDeleteOptions = {},
+): UseEpigramDeleteReturn {
   const queryClient = useQueryClient();
 
   const { mutate, isPending: isDeleting } = useMutation({
     mutationFn: () => deleteEpigram(epigramId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: epigramKeys.all });
-      router.replace("/feeds");
+      onSuccess?.();
     },
     onError: () => {
       Alert.alert(

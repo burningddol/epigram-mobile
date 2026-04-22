@@ -3,8 +3,7 @@ import { router } from "expo-router";
 
 import { epigramKeys, updateEpigram } from "~/entities/epigram";
 import {
-  AUTHOR_TYPE,
-  UNKNOWN_AUTHOR,
+  resolveAuthor,
   type EpigramCreateFormValues,
 } from "~/features/epigram-create";
 import { useTagInput } from "~/shared/hooks/useTagInput";
@@ -25,13 +24,6 @@ interface UseEpigramEditReturn {
   ) => void;
   handleCancel: () => void;
   submit: (values: EpigramCreateFormValues) => void;
-}
-
-function resolveAuthor(values: EpigramCreateFormValues): string {
-  if (values.authorType === AUTHOR_TYPE.UNKNOWN) return UNKNOWN_AUTHOR;
-  if (values.authorType === AUTHOR_TYPE.SELF)
-    return values.authorName ?? "본인";
-  return values.authorName ?? "";
 }
 
 export function useEpigramEdit(epigramId: number): UseEpigramEditReturn {

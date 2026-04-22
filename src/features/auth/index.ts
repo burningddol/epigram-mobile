@@ -2,6 +2,7 @@ export { loginSchema } from "./model/loginSchema";
 export type { LoginFormValues } from "./model/loginSchema";
 export { signUpSchema } from "./model/signUpSchema";
 export type { SignUpFormValues } from "./model/signUpSchema";
+export { useAuthMutation } from "./model/useAuthMutation";
 export { useLogout } from "./model/useLogout";
 export { useSessionExpiryRedirect } from "./model/useSessionExpiryRedirect";
 

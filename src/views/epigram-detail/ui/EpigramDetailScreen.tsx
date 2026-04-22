@@ -1,3 +1,4 @@
+import { router } from "expo-router";
 import { type ReactElement } from "react";
 
 import { useEpigramDetail } from "~/entities/epigram";
@@ -17,7 +18,9 @@ export function EpigramDetailScreen({
 }: EpigramDetailScreenProps): ReactElement | null {
   const { user, isLoading: isMeLoading } = useMe();
   const { data: epigram } = useEpigramDetail(epigramId);
-  const { handleDelete, isDeleting } = useEpigramDelete(epigramId);
+  const { handleDelete, isDeleting } = useEpigramDelete(epigramId, {
+    onSuccess: () => router.replace("/feeds"),
+  });
 
   if (isMeLoading || !user) return <LoadingState />;
 

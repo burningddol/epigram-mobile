@@ -1,14 +1,13 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useQueryClient } from "@tanstack/react-query";
 import { isAxiosError } from "axios";
-import { router } from "expo-router";
 import type { ReactElement } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
 
-import { signUp, userKeys } from "~/entities/user";
+import { signUp } from "~/entities/user";
 import { Button, Input } from "~/shared/ui";
 
+import { useAuthMutation } from "../model/useAuthMutation";
 import { signUpSchema, type SignUpFormValues } from "../model/signUpSchema";
 
 const DEFAULT_VALUES: SignUpFormValues = {
@@ -19,7 +18,7 @@ const DEFAULT_VALUES: SignUpFormValues = {
 };
 
 export function SignUpForm(): ReactElement {
-  const queryClient = useQueryClient();
+  const { handleAuthSuccess } = useAuthMutation();
   const {
     control,
     handleSubmit,
@@ -33,9 +32,8 @@ export function SignUpForm(): ReactElement {
 
   async function onSubmit(data: SignUpFormValues): Promise<void> {
     try {
-      const { user } = await signUp(data);
-      queryClient.setQueryData(userKeys.me(), user);
-      router.replace("/feeds");
+      const result = await signUp(data);
+      handleAuthSuccess(result);
     } catch (error) {
       if (isAxiosError(error) && error.response?.status === 500) {
         setError("nickname", { message: "이미 사용 중인 닉네임입니다." });

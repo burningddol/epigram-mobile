@@ -33,14 +33,20 @@ export function useRecentSearches(): UseRecentSearchesResult {
         const parsed = parseStored(raw);
         if (parsed) setRecentSearches(parsed);
       })
-      .catch(() => {});
+      .catch((error: unknown) => {
+        console.warn("[recent-searches] load failed", error);
+      });
     return () => {
       cancelled = true;
     };
   }, []);
 
   const persist = useCallback((next: string[]): void => {
-    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next)).catch(() => {});
+    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(next)).catch(
+      (error: unknown) => {
+        console.warn("[recent-searches] persist failed", error);
+      },
+    );
   }, []);
 
   const addRecentSearch = useCallback(
