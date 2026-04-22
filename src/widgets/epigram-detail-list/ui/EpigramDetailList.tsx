@@ -1,5 +1,5 @@
 import { MessageCircle } from "lucide-react-native";
-import { useCallback, useMemo, useRef, type ReactElement } from "react";
+import { useCallback, useMemo, useRef, useState, type ReactElement } from "react";
 import { ActivityIndicator, FlatList, Text, View } from "react-native";
 
 import { useEpigramComments, type Comment } from "~/entities/comment";
@@ -101,6 +101,16 @@ export function EpigramDetailList({
 
   const { onScroll } = useScrollToFocusedInput(listRef, KEYBOARD_BREATHING_ROOM);
 
+  const [editingCommentId, setEditingCommentId] = useState<number | null>(null);
+
+  const handleStartEdit = useCallback((commentId: number): void => {
+    setEditingCommentId(commentId);
+  }, []);
+
+  const handleEndEdit = useCallback((): void => {
+    setEditingCommentId(null);
+  }, []);
+
   const handleEndReached = useCallback((): void => {
     if (hasNextPage && !isFetchingNextPage) fetchNextPage();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
@@ -111,9 +121,12 @@ export function EpigramDetailList({
         comment={item}
         epigramId={epigramId}
         currentUserId={currentUserId}
+        isEditing={editingCommentId === item.id}
+        onStartEdit={handleStartEdit}
+        onEndEdit={handleEndEdit}
       />
     ),
-    [epigramId, currentUserId],
+    [epigramId, currentUserId, editingCommentId, handleStartEdit, handleEndEdit],
   );
 
   const headerElement = useMemo(
