@@ -1,5 +1,5 @@
 import { MoreVertical } from "lucide-react-native";
-import { memo, useState, type ReactElement } from "react";
+import { memo, type ReactElement } from "react";
 import { Alert, Pressable, Text, View } from "react-native";
 
 import { type Comment } from "~/entities/comment";
@@ -12,14 +12,19 @@ interface CommentItemProps {
   comment: Comment;
   epigramId: number;
   currentUserId: number | undefined;
+  isEditing: boolean;
+  onStartEdit: (commentId: number) => void;
+  onEndEdit: () => void;
 }
 
 function CommentItemBase({
   comment,
   epigramId,
   currentUserId,
+  isEditing,
+  onStartEdit,
+  onEndEdit,
 }: CommentItemProps): ReactElement {
-  const [isEditing, setIsEditing] = useState(false);
   const { deleteComment } = useCommentDelete({
     commentId: comment.id,
     epigramId,
@@ -33,7 +38,7 @@ function CommentItemBase({
       "댓글",
       undefined,
       [
-        { text: "수정", onPress: () => setIsEditing(true) },
+        { text: "수정", onPress: () => onStartEdit(comment.id) },
         { text: "삭제", style: "destructive", onPress: deleteComment },
         { text: "취소", style: "cancel" },
       ],
@@ -48,7 +53,7 @@ function CommentItemBase({
         epigramId={epigramId}
         initialContent={comment.content}
         initialIsPrivate={comment.isPrivate}
-        onCancel={() => setIsEditing(false)}
+        onCancel={onEndEdit}
       />
     );
   }
