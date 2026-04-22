@@ -1,6 +1,6 @@
 import { MessageCircle } from "lucide-react-native";
-import { useCallback, useEffect, useMemo, useRef, type ReactElement } from "react";
-import { ActivityIndicator, FlatList, Keyboard, Text, View } from "react-native";
+import { useCallback, useMemo, useRef, type ReactElement } from "react";
+import { ActivityIndicator, FlatList, Text, View } from "react-native";
 
 import { useEpigramComments, type Comment } from "~/entities/comment";
 import { useMe } from "~/entities/user";
@@ -99,24 +99,12 @@ export function EpigramDetailList({
     if (hasNextPage && !isFetchingNextPage) fetchNextPage();
   }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
-  const pendingEditIndexRef = useRef<number | null>(null);
-
-  useEffect(() => {
-    const subscription = Keyboard.addListener("keyboardDidShow", () => {
-      const index = pendingEditIndexRef.current;
-      if (index === null) return;
-      pendingEditIndexRef.current = null;
-      listRef.current?.scrollToIndex({
-        index,
-        viewPosition: 0,
-        animated: true,
-      });
-    });
-    return () => subscription.remove();
-  }, []);
-
   const handleStartEdit = useCallback((index: number): void => {
-    pendingEditIndexRef.current = index;
+    listRef.current?.scrollToIndex({
+      index,
+      viewPosition: 0,
+      animated: true,
+    });
   }, []);
 
   const handleScrollToIndexFailed = useCallback(
