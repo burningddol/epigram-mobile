@@ -1,7 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Alert } from "react-native";
 
-import { commentKeys } from "~/entities/comment";
 import { deleteEpigram, epigramKeys } from "~/entities/epigram";
 
 interface UseEpigramDeleteOptions {
@@ -23,7 +22,9 @@ export function useEpigramDelete(
     mutationFn: () => deleteEpigram(epigramId),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: epigramKeys.all });
-      queryClient.invalidateQueries({ queryKey: commentKeys.all });
+      queryClient.invalidateQueries({
+        predicate: (query) => query.queryKey.includes("comments"),
+      });
       onSuccess?.();
     },
     onError: () => {
