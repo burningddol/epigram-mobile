@@ -12,16 +12,12 @@ interface CommentItemProps {
   comment: Comment;
   epigramId: number;
   currentUserId: number | undefined;
-  index: number;
-  onStartEdit: (index: number) => void;
 }
 
 function CommentItemBase({
   comment,
   epigramId,
   currentUserId,
-  index,
-  onStartEdit,
 }: CommentItemProps): ReactElement {
   const [isEditing, setIsEditing] = useState(false);
   const { deleteComment } = useCommentDelete({
@@ -32,17 +28,12 @@ function CommentItemBase({
   const isOwnComment =
     currentUserId !== undefined && comment.writer.id === currentUserId;
 
-  function handleStartEdit(): void {
-    setIsEditing(true);
-    onStartEdit(index);
-  }
-
   function handleOpenMenu(): void {
     Alert.alert(
       "댓글",
       undefined,
       [
-        { text: "수정", onPress: handleStartEdit },
+        { text: "수정", onPress: () => setIsEditing(true) },
         { text: "삭제", style: "destructive", onPress: deleteComment },
         { text: "취소", style: "cancel" },
       ],
