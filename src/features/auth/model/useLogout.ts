@@ -12,9 +12,9 @@ export function useLogout(): UseLogoutReturn {
   const queryClient = useQueryClient();
 
   async function performLogout(): Promise<void> {
+    router.replace("/feeds");
     await clearTokens();
     queryClient.clear();
-    router.replace("/feeds");
   }
 
   function handleLogout(): void {

@@ -1,3 +1,4 @@
+import { useIsFocused } from "@react-navigation/native";
 import { Redirect, usePathname } from "expo-router";
 import type { ReactElement, ReactNode } from "react";
 
@@ -11,18 +12,21 @@ interface AuthGateProps {
   children: ReactNode;
 }
 
-export function AuthGate({ mode, children }: AuthGateProps): ReactElement {
+export function AuthGate({ mode, children }: AuthGateProps): ReactElement | null {
   const { user, isLoading } = useMe();
   const pathname = usePathname();
+  const isFocused = useIsFocused();
 
   if (isLoading) return <LoadingState />;
 
   if (mode === "protected" && !user) {
+    if (!isFocused) return null;
     const redirectParam = encodeURIComponent(pathname);
     return <Redirect href={`/login?redirect=${redirectParam}`} />;
   }
 
   if (mode === "auth-only" && user) {
+    if (!isFocused) return null;
     return <Redirect href="/feeds" />;
   }
 
