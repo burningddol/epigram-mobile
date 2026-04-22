@@ -4,11 +4,8 @@ import { router } from "expo-router";
 import { createEpigram, epigramKeys } from "~/entities/epigram";
 import { useTagInput } from "~/shared/hooks/useTagInput";
 
-import {
-  AUTHOR_TYPE,
-  UNKNOWN_AUTHOR,
-  type EpigramCreateFormValues,
-} from "./schema";
+import { resolveAuthor } from "./resolveAuthor";
+import { type EpigramCreateFormValues } from "./schema";
 
 interface UseEpigramCreateReturn {
   tagInput: string;
@@ -25,15 +22,6 @@ interface UseEpigramCreateReturn {
     onChange: (tags: string[]) => void,
   ) => void;
   submit: (values: EpigramCreateFormValues) => void;
-}
-
-function resolveAuthor(
-  values: EpigramCreateFormValues,
-  userNickname: string | undefined,
-): string {
-  if (values.authorType === AUTHOR_TYPE.UNKNOWN) return UNKNOWN_AUTHOR;
-  if (values.authorType === AUTHOR_TYPE.SELF) return userNickname ?? "본인";
-  return values.authorName ?? "";
 }
 
 export function useEpigramCreate(
