@@ -1,9 +1,10 @@
 import { ChevronLeft, ChevronRight } from "lucide-react-native";
 import { useMemo, useState, type ReactElement } from "react";
-import { Pressable, Text, View } from "react-native";
+import { Pressable, ScrollView, Text, View } from "react-native";
 
 import {
   EMOTION_META,
+  EMOTION_ORDER,
   useMonthlyEmotions,
   type Emotion,
 } from "~/entities/emotion-log";
@@ -99,6 +100,82 @@ function MonthHeader({
   );
 }
 
+type EmotionFilter = Emotion | null;
+
+interface EmotionFilterBarProps {
+  selected: EmotionFilter;
+  onSelect: (next: EmotionFilter) => void;
+}
+
+interface FilterChipProps {
+  isActive: boolean;
+  onPress: () => void;
+  label: string;
+  emoji?: string;
+}
+
+function FilterChip({
+  isActive,
+  onPress,
+  label,
+  emoji,
+}: FilterChipProps): ReactElement {
+  const containerClass = isActive
+    ? "bg-blue-100 border-blue-300"
+    : "bg-background border-line-200";
+  const labelClass = isActive
+    ? "font-semibold text-black-700"
+    : "font-medium text-black-300";
+
+  return (
+    <Pressable
+      onPress={onPress}
+      accessibilityRole="button"
+      accessibilityLabel={`${label} 필터`}
+      accessibilityState={{ selected: isActive }}
+      className={`flex-row items-center gap-1 rounded-full border px-3 py-1.5 ${containerClass}`}
+    >
+      {emoji ? <Text style={{ fontSize: 14 }}>{emoji}</Text> : null}
+      <Text className={`font-sans text-xs ${labelClass}`}>{label}</Text>
+    </Pressable>
+  );
+}
+
+function EmotionFilterBar({
+  selected,
+  onSelect,
+}: EmotionFilterBarProps): ReactElement {
+  function handleSelect(next: Emotion): void {
+    onSelect(selected === next ? null : next);
+  }
+
+  return (
+    <ScrollView
+      horizontal
+      showsHorizontalScrollIndicator={false}
+      contentContainerClassName="gap-2 pb-3"
+    >
+      <FilterChip
+        isActive={selected === null}
+        onPress={() => onSelect(null)}
+        label="전체"
+      />
+      {EMOTION_ORDER.map((emotion) => {
+        const meta = EMOTION_META[emotion];
+        return (
+          <FilterChip
+            key={emotion}
+            isActive={selected === emotion}
+            onPress={() => handleSelect(emotion)}
+            label={meta.label}
+            emoji={meta.emoji}
+          />
+        );
+      })}
+    </ScrollView>
+  );
+}
+
 interface DayCellProps {
   cell: CalendarCell;
   emotion: Emotion | undefined;
@@ -149,6 +226,7 @@ export function EmotionCalendar({
 
   const [year, setYear] = useState(todayYear);
   const [month, setMonth] = useState(todayMonth);
+  const [filter, setFilter] = useState<EmotionFilter>(null);
 
   const { data: emotionLogs = [] } = useMonthlyEmotions({
     userId,
@@ -202,6 +280,8 @@ export function EmotionCalendar({
         onNext={handleNextMonth}
       />
 
+      <EmotionFilterBar selected={filter} onSelect={setFilter} />
+
       <View className="flex-row">
         {WEEKDAY_LABELS.map((label) => (
           <View key={label} className="flex-1 items-center py-2">
@@ -213,18 +293,23 @@ export function EmotionCalendar({
       </View>
 
       <View className="flex-row flex-wrap border-line-200 border">
-        {cells.map((cell, index) => (
-          <View
-            key={`${cell.dateKey}-${index}`}
-            style={{ width: `${100 / 7}%` }}
-          >
-            <DayCell
-              cell={cell}
-              emotion={emotionByDate.get(cell.dateKey)}
-              isToday={isCellToday(cell)}
-            />
-          </View>
-        ))}
+        {cells.map((cell, index) => {
+          const dayEmotion = emotionByDate.get(cell.dateKey);
+          const visibleEmotion =
+            filter === null || dayEmotion === filter ? dayEmotion : undefined;
+          return (
+            <View
+              key={`${cell.dateKey}-${index}`}
+              style={{ width: `${100 / 7}%` }}
+            >
+              <DayCell
+                cell={cell}
+                emotion={visibleEmotion}
+                isToday={isCellToday(cell)}
+              />
+            </View>
+          );
+        })}
       </View>
     </View>
   );
