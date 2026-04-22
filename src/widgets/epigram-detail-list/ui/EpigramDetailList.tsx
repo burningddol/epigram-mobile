@@ -6,6 +6,7 @@ import { useEpigramComments, type Comment } from "~/entities/comment";
 import { useMe } from "~/entities/user";
 import { CommentForm } from "~/features/comment-create";
 import { useScrollToFocusedInput } from "~/shared/hooks/useScrollToFocusedInput";
+import { EmptyState } from "~/shared/ui";
 
 import { CommentItem } from "./CommentItem";
 
@@ -43,17 +44,14 @@ function CommentSkeleton(): ReactElement {
   );
 }
 
-function EmptyState(): ReactElement {
+function CommentsEmptyState(): ReactElement {
   return (
-    <View className="items-center gap-2 rounded-2xl border border-dashed border-line-200 px-4 py-10">
-      <MessageCircle size={28} color="#6a82a9" strokeWidth={1.5} />
-      <Text className="font-sans text-sm font-semibold text-black-700">
-        아직 댓글이 없어요
-      </Text>
-      <Text className="font-sans text-xs text-black-300">
-        첫 번째 댓글을 남겨보세요.
-      </Text>
-    </View>
+    <EmptyState
+      variant="boxed"
+      icon={<MessageCircle size={28} color="#6a82a9" strokeWidth={1.5} />}
+      title="아직 댓글이 없어요"
+      description="첫 번째 댓글을 남겨보세요."
+    />
   );
 }
 
@@ -156,7 +154,7 @@ export function EpigramDetailList({
     }
     return (
       <View className="pt-4">
-        <EmptyState />
+        <CommentsEmptyState />
       </View>
     );
   }, [isLoading]);

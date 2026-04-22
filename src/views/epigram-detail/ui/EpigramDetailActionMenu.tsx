@@ -1,7 +1,9 @@
 import { router } from "expo-router";
 import { MoreVertical } from "lucide-react-native";
 import type { ReactElement } from "react";
-import { Alert, Pressable } from "react-native";
+import { Pressable } from "react-native";
+
+import { showActionAlert } from "~/shared/lib/showActionAlert";
 
 interface EpigramDetailActionMenuProps {
   epigramId: number;
@@ -15,19 +17,13 @@ export function EpigramDetailActionMenu({
   isDeleting,
 }: EpigramDetailActionMenuProps): ReactElement {
   function handleOpenMenu(): void {
-    Alert.alert(
-      "에피그램",
-      undefined,
-      [
-        {
-          text: "수정",
-          onPress: () => router.push(`/epigrams/${epigramId}/edit`),
-        },
-        { text: "삭제", style: "destructive", onPress: onDelete },
-        { text: "취소", style: "cancel" },
-      ],
-      { cancelable: true },
-    );
+    showActionAlert("에피그램", [
+      {
+        label: "수정",
+        onPress: () => router.push(`/epigrams/${epigramId}/edit`),
+      },
+      { label: "삭제", destructive: true, onPress: onDelete },
+    ]);
   }
 
   return (
