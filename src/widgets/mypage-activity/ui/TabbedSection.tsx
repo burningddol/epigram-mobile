@@ -42,16 +42,14 @@ export function TabbedSection({ userId }: TabbedSectionProps): ReactElement {
     () => new Set(["epigrams"]),
   );
 
-  const { data: epigramsData } = useEpigrams({
+  const { totalCount: epigramCount = 0 } = useEpigrams({
     limit: MYPAGE_LIST_PAGE_SIZE,
     writerId: userId,
   });
-  const { data: commentsData } = useMyComments({
+  const { totalCount: commentCount = 0 } = useMyComments({
     userId,
     limit: MYPAGE_LIST_PAGE_SIZE,
   });
-  const epigramCount = epigramsData?.pages[0]?.totalCount ?? 0;
-  const commentCount = commentsData?.pages[0]?.totalCount ?? 0;
 
   function handleSelectTab(tab: ActiveTab): void {
     setActiveTab(tab);

@@ -1,12 +1,5 @@
 import { type ReactElement } from "react";
-import {
-  KeyboardAvoidingView,
-  Platform,
-  ScrollView,
-  Text,
-  View,
-} from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { ScrollView, Text, View } from "react-native";
 
 import { useMe } from "~/entities/user";
 import {
@@ -14,9 +7,8 @@ import {
   useEpigramCreate,
   type EpigramCreateFormValues,
 } from "~/features/epigram-create";
-import { LoadingState } from "~/shared/ui";
+import { LoadingState, ScreenLayout } from "~/shared/ui";
 import { EpigramForm } from "~/widgets/epigram-form";
-import { HeaderBackButton } from "~/widgets/header";
 
 const WRITING_TIPS = [
   "500자 이내의 짧고 인상적인 문장을 담아보세요.",
@@ -63,37 +55,29 @@ export function AddEpigramScreen(): ReactElement | null {
   if (isMeLoading || !user) return <LoadingState />;
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
-      <View className="flex-row items-center px-screen-x py-2">
-        <HeaderBackButton />
-      </View>
-      <KeyboardAvoidingView
+    <ScreenLayout>
+      <ScrollView
         className="flex-1"
-        behavior={Platform.OS === "ios" ? "padding" : undefined}
+        contentContainerClassName="px-screen-x pb-12 pt-2 gap-6"
+        keyboardShouldPersistTaps="handled"
       >
-        <ScrollView
-          className="flex-1"
-          contentContainerClassName="px-screen-x pb-12 pt-2 gap-6"
-          keyboardShouldPersistTaps="handled"
-        >
-          <Text className="font-serif-bold text-2xl text-black-900">
-            에피그램 작성
-          </Text>
-          <WritingTips />
-          <EpigramForm
-            defaultValues={DEFAULT_VALUES}
-            onSubmit={submit}
-            isSubmitting={isSubmitting}
-            hasError={hasError}
-            errorMessage="에피그램을 등록하지 못했습니다. 잠시 후 다시 시도해주세요."
-            submitLabel="등록"
-            tagInput={tagInput}
-            onTagInputChange={handleTagInputChange}
-            onAddTag={handleAddTag}
-            onRemoveTag={handleRemoveTag}
-          />
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+        <Text className="font-serif-bold text-2xl text-black-900">
+          에피그램 작성
+        </Text>
+        <WritingTips />
+        <EpigramForm
+          defaultValues={DEFAULT_VALUES}
+          onSubmit={submit}
+          isSubmitting={isSubmitting}
+          hasError={hasError}
+          errorMessage="에피그램을 등록하지 못했습니다. 잠시 후 다시 시도해주세요."
+          submitLabel="등록"
+          tagInput={tagInput}
+          onTagInputChange={handleTagInputChange}
+          onAddTag={handleAddTag}
+          onRemoveTag={handleRemoveTag}
+        />
+      </ScrollView>
+    </ScreenLayout>
   );
 }

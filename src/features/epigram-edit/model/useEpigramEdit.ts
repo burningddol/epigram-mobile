@@ -54,9 +54,6 @@ export function useEpigramEdit(epigramId: number): UseEpigramEditReturn {
       }),
     onSuccess: (epigram) => {
       queryClient.invalidateQueries({ queryKey: epigramKeys.all });
-      queryClient.invalidateQueries({
-        queryKey: epigramKeys.detail(epigramId),
-      });
       if (router.canGoBack()) {
         router.back();
         return;

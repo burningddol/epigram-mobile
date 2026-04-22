@@ -1,15 +1,9 @@
 import {
-  useInfiniteQuery,
-  type InfiniteData,
-  type UseInfiniteQueryResult,
-} from "@tanstack/react-query";
+  useInfiniteListQuery,
+  type UseInfiniteListQueryResult,
+} from "~/shared/api/useInfiniteListQuery";
 
-import { apiClient } from "~/shared/api/client";
-
-import {
-  epigramListResponseSchema,
-  type EpigramListResponse,
-} from "../model/schema";
+import { epigramListResponseSchema, type Epigram } from "../model/schema";
 import { epigramKeys } from "./keys";
 
 interface UseSearchEpigramsParams {
@@ -20,21 +14,13 @@ interface UseSearchEpigramsParams {
 export function useSearchEpigrams({
   keyword,
   limit,
-}: UseSearchEpigramsParams): UseInfiniteQueryResult<
-  InfiniteData<EpigramListResponse, number | undefined>,
-  Error
-> {
-  return useInfiniteQuery({
+}: UseSearchEpigramsParams): UseInfiniteListQueryResult<Epigram> {
+  return useInfiniteListQuery({
     queryKey: epigramKeys.search(keyword),
-    queryFn: async ({ pageParam }) => {
-      const params = new URLSearchParams({ limit: String(limit), keyword });
-      if (pageParam !== undefined) params.set("cursor", String(pageParam));
-
-      const response = await apiClient.get<unknown>(`/epigrams?${params}`);
-      return epigramListResponseSchema.parse(response.data);
-    },
-    initialPageParam: undefined as number | undefined,
-    getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
+    endpoint: "/epigrams",
+    limit,
+    schema: epigramListResponseSchema,
+    searchParams: { keyword },
     enabled: keyword.trim().length > 0,
   });
 }

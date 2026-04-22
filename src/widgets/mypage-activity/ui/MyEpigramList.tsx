@@ -1,4 +1,4 @@
-import { useMemo, type ReactElement } from "react";
+import { type ReactElement } from "react";
 import { Text, View } from "react-native";
 
 import {
@@ -15,15 +15,15 @@ interface MyEpigramListProps {
 }
 
 export function MyEpigramList({ userId }: MyEpigramListProps): ReactElement {
-  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useEpigrams({
+  const {
+    items: epigrams,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+  } = useEpigrams({
     limit: MYPAGE_LIST_PAGE_SIZE,
     writerId: userId,
   });
-
-  const epigrams = useMemo(
-    () => data?.pages.flatMap((page) => page.list) ?? [],
-    [data],
-  );
 
   if (epigrams.length === 0) {
     return (
