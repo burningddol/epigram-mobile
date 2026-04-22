@@ -1,15 +1,9 @@
-import {
-  useInfiniteQuery,
-  type InfiniteData,
-  type UseInfiniteQueryResult,
-} from "@tanstack/react-query";
+import { useInfiniteQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
 
 import { apiClient } from "~/shared/api/client";
 
-import {
-  commentListResponseSchema,
-  type CommentListResponse,
-} from "../model/schema";
+import { commentListResponseSchema, type Comment } from "../model/schema";
 import { commentKeys } from "./keys";
 
 interface UseEpigramCommentsParams {
@@ -17,14 +11,21 @@ interface UseEpigramCommentsParams {
   limit: number;
 }
 
+interface UseEpigramCommentsResult {
+  comments: Comment[];
+  totalCount: number | undefined;
+  isLoading: boolean;
+  isError: boolean;
+  isFetchingNextPage: boolean;
+  hasNextPage: boolean;
+  fetchNextPage: () => void;
+}
+
 export function useEpigramComments({
   epigramId,
   limit,
-}: UseEpigramCommentsParams): UseInfiniteQueryResult<
-  InfiniteData<CommentListResponse, number | undefined>,
-  Error
-> {
-  return useInfiniteQuery({
+}: UseEpigramCommentsParams): UseEpigramCommentsResult {
+  const query = useInfiniteQuery({
     queryKey: commentKeys.byEpigramList(epigramId, { limit }),
     enabled: epigramId > 0,
     queryFn: async ({ pageParam }) => {
@@ -39,4 +40,19 @@ export function useEpigramComments({
     initialPageParam: undefined as number | undefined,
     getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
   });
+
+  const comments = useMemo(
+    () => query.data?.pages.flatMap((page) => page.list) ?? [],
+    [query.data?.pages],
+  );
+
+  return {
+    comments,
+    totalCount: query.data?.pages[0]?.totalCount,
+    isLoading: query.isLoading,
+    isError: query.isError,
+    isFetchingNextPage: query.isFetchingNextPage,
+    hasNextPage: query.hasNextPage,
+    fetchNextPage: query.fetchNextPage,
+  };
 }
