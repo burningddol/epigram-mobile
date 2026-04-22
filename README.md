@@ -31,7 +31,7 @@ https://github.com/user-attachments/assets/eb621583-41be-46e2-8cd8-3740ea94327b
 1. App Store · Play Store 에서 **Expo Go** 설치
 2. 아래 QR을 Expo Go 로 스캔 
 
-<img width="200" height="200" alt="image" src="https://github.com/user-attachments/assets/2a49c62f-7d62-4c1b-8e83-5eb06440d921" />
+<img width="200" height="200" alt="image" src="https://github.com/user-attachments/assets/9b8449a8-d50d-4480-9acc-b86050f1aa88" />
 
 
 
