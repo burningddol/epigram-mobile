@@ -8,12 +8,14 @@ interface ScreenLayoutProps {
   children: ReactNode;
   headerRight?: ReactElement;
   withKeyboardAvoiding?: boolean;
+  showBackButton?: boolean;
 }
 
 export function ScreenLayout({
   children,
   headerRight,
   withKeyboardAvoiding = true,
+  showBackButton = true,
 }: ScreenLayoutProps): ReactElement {
   const body = withKeyboardAvoiding ? (
     <KeyboardAvoidingView
@@ -26,12 +28,16 @@ export function ScreenLayout({
     <View className="flex-1">{children}</View>
   );
 
+  const hasHeader = showBackButton || headerRight !== undefined;
+
   return (
     <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
-      <View className="flex-row items-center justify-between px-screen-x py-2">
-        <HeaderBackButton />
-        {headerRight}
-      </View>
+      {hasHeader && (
+        <View className="flex-row items-center justify-between px-screen-x py-2">
+          {showBackButton ? <HeaderBackButton /> : <View />}
+          {headerRight}
+        </View>
+      )}
       {body}
     </SafeAreaView>
   );

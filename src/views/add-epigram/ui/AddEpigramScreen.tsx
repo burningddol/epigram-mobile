@@ -1,44 +1,15 @@
 import { type ReactElement } from "react";
-import { ScrollView, Text, View } from "react-native";
+import { ScrollView, Text } from "react-native";
 
 import { useMe } from "~/entities/user";
 import {
-  AUTHOR_TYPE,
+  EPIGRAM_CREATE_DEFAULT_VALUES,
   useEpigramCreate,
-  type EpigramCreateFormValues,
 } from "~/features/epigram-create";
 import { LoadingState, ScreenLayout } from "~/shared/ui";
 import { EpigramForm } from "~/widgets/epigram-form";
 
-const WRITING_TIPS = [
-  "500자 이내의 짧고 인상적인 문장을 담아보세요.",
-  "출처가 있다면 함께 기록해두면 좋습니다.",
-  "태그를 활용하면 비슷한 글귀를 찾기 쉬워집니다.",
-];
-
-const DEFAULT_VALUES: EpigramCreateFormValues = {
-  content: "",
-  authorType: AUTHOR_TYPE.DIRECT,
-  authorName: "",
-  referenceTitle: "",
-  referenceUrl: "",
-  tags: [],
-};
-
-function WritingTips(): ReactElement {
-  return (
-    <View className="gap-2 rounded-2xl bg-blue-100 p-4">
-      <Text className="font-sans text-sm font-semibold text-blue-800">
-        작성 팁
-      </Text>
-      {WRITING_TIPS.map((tip) => (
-        <Text key={tip} className="font-sans text-sm text-blue-700">
-          • {tip}
-        </Text>
-      ))}
-    </View>
-  );
-}
+import { WritingTips } from "./WritingTips";
 
 export function AddEpigramScreen(): ReactElement | null {
   const { user, isLoading: isMeLoading } = useMe();
@@ -66,7 +37,7 @@ export function AddEpigramScreen(): ReactElement | null {
         </Text>
         <WritingTips />
         <EpigramForm
-          defaultValues={DEFAULT_VALUES}
+          defaultValues={EPIGRAM_CREATE_DEFAULT_VALUES}
           onSubmit={submit}
           isSubmitting={isSubmitting}
           hasError={hasError}

@@ -1,6 +1,5 @@
 import { useCallback, type ReactElement } from "react";
-import { Keyboard, Text, View } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context";
+import { Keyboard, View } from "react-native";
 
 import {
   RecentSearchList,
@@ -8,27 +7,9 @@ import {
   SearchResults,
   useSearch,
 } from "~/features/epigram-search";
+import { ScreenLayout } from "~/shared/ui";
 
-function InitialState(): ReactElement {
-  return (
-    <View className="items-center gap-4 py-24">
-      <Text
-        className="select-none font-serif text-7xl text-blue-300"
-        accessibilityElementsHidden
-      >
-        {"\u201C"}
-      </Text>
-      <View className="items-center gap-1.5 px-screen-x">
-        <Text className="text-center font-serif text-base text-black-500">
-          검색어를 입력해 에피그램을 찾아보세요
-        </Text>
-        <Text className="text-center font-sans text-xs text-black-300">
-          작가 이름, 글귀, 태그 모두 검색 가능합니다
-        </Text>
-      </View>
-    </View>
-  );
-}
+import { SearchInitialState } from "./SearchInitialState";
 
 export function SearchScreen(): ReactElement {
   const {
@@ -49,7 +30,7 @@ export function SearchScreen(): ReactElement {
   );
 
   return (
-    <SafeAreaView className="flex-1 bg-background" edges={["top"]}>
+    <ScreenLayout showBackButton={false} withKeyboardAvoiding={false}>
       <View className="gap-6 px-screen-x pt-6">
         <SearchBar
           inputValue={inputValue}
@@ -66,9 +47,9 @@ export function SearchScreen(): ReactElement {
         {activeKeyword ? (
           <SearchResults keyword={activeKeyword} />
         ) : (
-          <InitialState />
+          <SearchInitialState />
         )}
       </View>
-    </SafeAreaView>
+    </ScreenLayout>
   );
 }
