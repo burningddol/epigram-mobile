@@ -1,8 +1,8 @@
 import { MessageCircle } from "lucide-react-native";
-import { useCallback, useMemo, useRef, type ReactElement } from "react";
-import { ActivityIndicator, FlatList, Text, View } from "react-native";
+import { useCallback, useMemo, type ReactElement } from "react";
+import { ActivityIndicator, ScrollView, Text, View } from "react-native";
 
-import { useEpigramComments, type Comment } from "~/entities/comment";
+import { useEpigramComments } from "~/entities/comment";
 import { useMe } from "~/entities/user";
 import { CommentForm } from "~/features/comment-create";
 
@@ -10,7 +10,6 @@ import { CommentItem } from "./CommentItem";
 
 const COMMENTS_PAGE_SIZE = 5;
 const SKELETON_COUNT = 3;
-const END_REACHED_THRESHOLD = 0.4;
 
 interface EpigramDetailListProps {
   epigramId: number;
@@ -22,10 +21,6 @@ interface SectionHeaderProps {
   epigramId: number;
   author: { nickname: string; image: string | null } | null;
   userId: number | undefined;
-}
-
-function ItemSeparator(): ReactElement {
-  return <View className="h-3" />;
 }
 
 function CommentSkeleton(): ReactElement {
@@ -80,7 +75,6 @@ export function EpigramDetailList({
   listHeader,
 }: EpigramDetailListProps): ReactElement {
   const { user: me } = useMe();
-  const listRef = useRef<FlatList<Comment>>(null);
   const { data, isLoading, isFetchingNextPage, hasNextPage, fetchNextPage } =
     useEpigramComments({ epigramId, limit: COMMENTS_PAGE_SIZE });
 
@@ -95,44 +89,34 @@ export function EpigramDetailList({
     [me],
   );
 
-  const handleEndReached = useCallback((): void => {
-    if (hasNextPage && !isFetchingNextPage) fetchNextPage();
-  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
-
-  const handleStartEdit = useCallback((index: number): void => {
-    listRef.current?.scrollToIndex({
-      index,
-      viewPosition: 0,
-      animated: true,
-    });
-  }, []);
-
-  const handleScrollToIndexFailed = useCallback(
-    (info: { index: number; averageItemLength: number }): void => {
-      listRef.current?.scrollToOffset({
-        offset: info.averageItemLength * info.index,
-        animated: true,
-      });
+  const handleScroll = useCallback(
+    (event: {
+      nativeEvent: {
+        contentOffset: { y: number };
+        contentSize: { height: number };
+        layoutMeasurement: { height: number };
+      };
+    }): void => {
+      const { contentOffset, contentSize, layoutMeasurement } = event.nativeEvent;
+      const distanceFromBottom =
+        contentSize.height - contentOffset.y - layoutMeasurement.height;
+      if (distanceFromBottom < 200 && hasNextPage && !isFetchingNextPage) {
+        fetchNextPage();
+      }
     },
-    [],
+    [hasNextPage, isFetchingNextPage, fetchNextPage],
   );
 
-  const renderItem = useCallback(
-    ({ item, index }: { item: Comment; index: number }) => (
-      <CommentItem
-        comment={item}
-        epigramId={epigramId}
-        currentUserId={currentUserId}
-        index={index}
-        onStartEdit={handleStartEdit}
-      />
-    ),
-    [epigramId, currentUserId, handleStartEdit],
-  );
+  const hasComments = comments.length > 0;
 
-  const headerElement = useMemo(
-    () => (
-      <View className="gap-6">
+  return (
+    <ScrollView
+      contentContainerClassName="px-screen-x pb-10"
+      keyboardShouldPersistTaps="handled"
+      onScroll={handleScroll}
+      scrollEventThrottle={32}
+    >
+      <View className="gap-6" style={{ marginBottom: 12 }}>
         {listHeader}
         <SectionHeader
           totalCount={totalCount}
@@ -141,49 +125,39 @@ export function EpigramDetailList({
           userId={currentUserId}
         />
       </View>
-    ),
-    [listHeader, totalCount, epigramId, author, currentUserId],
-  );
 
-  const renderEmpty = useCallback((): ReactElement => {
-    if (isLoading) {
-      return (
+      {!hasComments && isLoading && (
         <View className="gap-3 pt-4">
           {Array.from({ length: SKELETON_COUNT }).map((_, index) => (
             <CommentSkeleton key={index} />
           ))}
         </View>
-      );
-    }
-    return (
-      <View className="pt-4">
-        <EmptyState />
-      </View>
-    );
-  }, [isLoading]);
+      )}
 
-  const footerElement = isFetchingNextPage ? (
-    <View className="py-4">
-      <ActivityIndicator color="#6a82a9" />
-    </View>
-  ) : null;
+      {!hasComments && !isLoading && (
+        <View className="pt-4">
+          <EmptyState />
+        </View>
+      )}
 
-  return (
-    <FlatList
-      ref={listRef}
-      data={comments}
-      keyExtractor={(comment) => String(comment.id)}
-      renderItem={renderItem}
-      ListHeaderComponent={headerElement}
-      ListEmptyComponent={renderEmpty}
-      ListFooterComponent={footerElement}
-      onEndReached={handleEndReached}
-      onEndReachedThreshold={END_REACHED_THRESHOLD}
-      contentContainerClassName="px-screen-x pb-10"
-      ItemSeparatorComponent={ItemSeparator}
-      ListHeaderComponentStyle={{ marginBottom: 12 }}
-      keyboardShouldPersistTaps="handled"
-      onScrollToIndexFailed={handleScrollToIndexFailed}
-    />
+      {hasComments && (
+        <View className="gap-3">
+          {comments.map((comment) => (
+            <CommentItem
+              key={comment.id}
+              comment={comment}
+              epigramId={epigramId}
+              currentUserId={currentUserId}
+            />
+          ))}
+        </View>
+      )}
+
+      {isFetchingNextPage && (
+        <View className="py-4">
+          <ActivityIndicator color="#6a82a9" />
+        </View>
+      )}
+    </ScrollView>
   );
 }
