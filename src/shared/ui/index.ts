@@ -1,5 +1,6 @@
 export { Button } from "./Button";
 export type { ButtonProps } from "./Button";
+export { EmptyState } from "./EmptyState";
 export { ErrorBoundary } from "./ErrorBoundary";
 export { ErrorState } from "./ErrorState";
 export { Input } from "./Input";

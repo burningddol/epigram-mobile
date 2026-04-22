@@ -16,7 +16,7 @@ import {
 } from "~/entities/epigram";
 import { useMe } from "~/entities/user";
 import { EmotionSelector } from "~/features/emotion-select";
-import { ErrorBoundary, SectionErrorFallback } from "~/shared/ui";
+import { EmptyState, ErrorBoundary, SectionErrorFallback } from "~/shared/ui";
 
 const FEED_PAGE_SIZE = 10;
 
@@ -92,16 +92,12 @@ function LoadingState(): ReactElement {
   );
 }
 
-function EmptyState(): ReactElement {
+function FeedEmptyState(): ReactElement {
   return (
-    <View className="flex-1 items-center justify-center py-20">
-      <Text className="font-serif text-base text-black-300">
-        등록된 에피그램이 없습니다
-      </Text>
-      <Text className="mt-2 font-sans text-sm text-blue-400">
-        첫 번째 에피그램을 작성해 보세요
-      </Text>
-    </View>
+    <EmptyState
+      title="등록된 에피그램이 없습니다"
+      description="첫 번째 에피그램을 작성해 보세요"
+    />
   );
 }
 
@@ -166,7 +162,7 @@ function EpigramFeedInner(): ReactElement {
       renderItem={renderItem}
       ItemSeparatorComponent={ItemSeparator}
       ListHeaderComponent={<ListHeader showEmotionSelector={isAuthenticated} />}
-      ListEmptyComponent={EmptyState}
+      ListEmptyComponent={FeedEmptyState}
       ListFooterComponent={<FooterLoader visible={isFetchingNextPage} />}
       onEndReached={handleEndReached}
       onEndReachedThreshold={0.3}

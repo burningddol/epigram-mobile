@@ -1,11 +1,12 @@
 import { MoreVertical } from "lucide-react-native";
 import { memo, type ReactElement } from "react";
-import { Alert, Pressable, Text, View } from "react-native";
+import { Pressable, Text, View } from "react-native";
 
 import { type Comment } from "~/entities/comment";
 import { useCommentDelete } from "~/features/comment-delete";
 import { CommentEditForm } from "~/features/comment-edit";
 import { formatRelativeTime } from "~/shared/lib/date";
+import { showActionAlert } from "~/shared/lib/showActionAlert";
 import { UserAvatar } from "~/shared/ui";
 
 interface CommentItemProps {
@@ -34,16 +35,10 @@ function CommentItemBase({
     currentUserId !== undefined && comment.writer.id === currentUserId;
 
   function handleOpenMenu(): void {
-    Alert.alert(
-      "댓글",
-      undefined,
-      [
-        { text: "수정", onPress: () => onStartEdit(comment.id) },
-        { text: "삭제", style: "destructive", onPress: deleteComment },
-        { text: "취소", style: "cancel" },
-      ],
-      { cancelable: true },
-    );
+    showActionAlert("댓글", [
+      { label: "수정", onPress: () => onStartEdit(comment.id) },
+      { label: "삭제", destructive: true, onPress: deleteComment },
+    ]);
   }
 
   if (isEditing) {
