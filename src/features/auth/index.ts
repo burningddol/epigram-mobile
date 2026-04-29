@@ -6,6 +6,8 @@ export { useAuthMutation } from "./model/useAuthMutation";
 export { useLogout } from "./model/useLogout";
 export { useSessionExpiryRedirect } from "./model/useSessionExpiryRedirect";
 
+export { resolveRedirectTarget } from "./lib/resolveRedirectTarget";
+
 export { AuthBrandHeader } from "./ui/AuthBrandHeader";
 export { AuthGate } from "./ui/AuthGate";
 export { AuthToggleLink } from "./ui/AuthToggleLink";

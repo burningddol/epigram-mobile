@@ -1,5 +1,5 @@
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useLocalSearchParams, type Href } from "expo-router";
+import { useLocalSearchParams } from "expo-router";
 import type { ReactElement } from "react";
 import { Controller, useForm } from "react-hook-form";
 import { View } from "react-native";
@@ -7,22 +7,11 @@ import { View } from "react-native";
 import { signIn } from "~/entities/user";
 import { Button, Input } from "~/shared/ui";
 
+import { resolveRedirectTarget } from "../lib/resolveRedirectTarget";
 import { useAuthMutation } from "../model/useAuthMutation";
 import { loginSchema, type LoginFormValues } from "../model/loginSchema";
 
 const DEFAULT_VALUES: LoginFormValues = { email: "", password: "" };
-const DEFAULT_REDIRECT: Href = "/feeds";
-
-function resolveRedirectTarget(redirect: string | undefined): Href {
-  if (!redirect) return DEFAULT_REDIRECT;
-  try {
-    const decoded = decodeURIComponent(redirect);
-    if (decoded.startsWith("/")) return decoded as Href;
-    return DEFAULT_REDIRECT;
-  } catch {
-    return DEFAULT_REDIRECT;
-  }
-}
 
 export function LoginForm(): ReactElement {
   const { handleAuthSuccess } = useAuthMutation();
