@@ -1,9 +1,11 @@
+import { useLocalSearchParams } from "expo-router";
 import { useState, type ReactElement } from "react";
 import { ActivityIndicator, Pressable, Text, View } from "react-native";
 
 import { signIn } from "~/entities/user";
 import { cn } from "~/shared/lib/cn";
 
+import { resolveRedirectTarget } from "../lib/resolveRedirectTarget";
 import { useAuthMutation } from "../model/useAuthMutation";
 
 const GUEST_CREDENTIALS = {
@@ -13,6 +15,7 @@ const GUEST_CREDENTIALS = {
 
 export function GuestLoginButton(): ReactElement {
   const { handleAuthSuccess } = useAuthMutation();
+  const { redirect } = useLocalSearchParams<{ redirect?: string }>();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -21,7 +24,7 @@ export function GuestLoginButton(): ReactElement {
     setError(null);
     try {
       const result = await signIn(GUEST_CREDENTIALS);
-      handleAuthSuccess(result);
+      handleAuthSuccess(result, resolveRedirectTarget(redirect));
     } catch {
       setError("게스트 로그인에 실패했습니다. 잠시 후 다시 시도해주세요.");
     } finally {
